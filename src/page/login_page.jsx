@@ -5,9 +5,10 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import "../css/login.css";
 import RegisterModal from '../component/register_modal';
+import {apiURL, post} from "../service/util";
 
 function LoginPage() {
-  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRegisterModalVisible, setRegisterModalVisible] = useState(false);
@@ -16,19 +17,10 @@ function LoginPage() {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const url = `${process.env.REACT_APP_API_URL}/login`;
-      const response = await axios.post(url, {
-        name: username,
-        password: password
-      });
+      const url = `${apiURL}/user/login`;
+      const data = await post(url, { userId, password });
 
-      const { data } = response;
-
-      if (!data.ok) {
-        throw new Error(data.message || '登录失败，请重试');
-      }
-
-      const token = data.data.jwt;
+      const token = data.jwt;
       localStorage.setItem('jwt', token);
       localStorage.setItem('isLoggedIn', 'true');
 
@@ -54,9 +46,9 @@ function LoginPage() {
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="用户名"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
+              placeholder="用户ID"
+              value={userId}
+              onChange={e => setUserId(e.target.value)}
             />
           </Form.Item>
           <Form.Item

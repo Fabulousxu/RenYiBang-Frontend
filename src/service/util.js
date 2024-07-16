@@ -1,7 +1,11 @@
 export const apiURL = 'http://localhost:8080/api'
 
 export async function get(url) {
-  let res = await fetch(url, {method: 'GET', credentials: 'include'})
+  let res = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {'jwt': localStorage.getItem('jwt')},
+  })
   if (res.status !== 200) throw res.status
   res = await res.json()
   if (!res.ok) throw res.message
@@ -9,11 +13,12 @@ export async function get(url) {
 }
 
 export async function post(url, data) {
+  console.log(url, data)
   let res = await fetch(url, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(data),
-    credentials: 'include'
+    credentials: 'include',
   })
   if (res.status !== 200) throw res.status
   res = await res.json()

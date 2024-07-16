@@ -16,7 +16,7 @@ import LoginPage from "./page/login_page";
 export default function App() {
   return (
     <Routes>
-      <Route index={true} element={<Navigate to='/task'/>}/>
+      <Route index={true} element={<Navigate to='/login'/>}/>
       <Route path='/task' element={<TaskPage/>}/>
       <Route path='/task/:id' element={<TaskDetailPage/>}/>
       <Route path='/service' element={<ServicePage/>}/>
