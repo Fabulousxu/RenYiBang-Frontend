@@ -34,13 +34,11 @@ export default function OrderRecipientPage() {
   const { id } = useParams();
   const location = useLocation();
   const [order, setOrder] = useState(null);
-  const isTask = location.pathname.includes('task');
-  const isService = location.pathname.includes('service');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const orderData = await fetchOrderById(id, isTask);
+        const orderData = await fetchOrderById(id);
         setOrder(orderData);
       } catch (error) {
         console.error("Error fetching order data:", error);
@@ -52,7 +50,7 @@ export default function OrderRecipientPage() {
 
   const handleConfirm = async () => {
     try {
-      await changeOrderStatus(id, 3, isTask); // 已完成
+      await changeOrderStatus(id, 3); // 已完成
       setOrder({ ...order, status: 2 });
     } catch (error) {
       console.error(error);
@@ -61,7 +59,7 @@ export default function OrderRecipientPage() {
 
   const handleCancel = async () => {
     try {
-      await changeOrderStatus(id, 4, isTask); // 已取消
+      await changeOrderStatus(id, 4); // 已取消
       setOrder({ ...order, status: 4 });
     } catch (error) {
       console.error(error);
@@ -70,7 +68,7 @@ export default function OrderRecipientPage() {
 
   const handleComplete = async () => {
     try {
-      await changeOrderStatus(id, 2, isTask); // 待确认
+      await changeOrderStatus(id, 2); // 待确认
       setOrder({ ...order, status: 3 });
     } catch (error) {
       console.error(error);
