@@ -42,6 +42,7 @@ export default function TaskDetailPage(props) {
 
   useEffect(() => {
     getTask(id).then(res => {
+      console.log(res);
       setDetail(res);
     }).catch(err => {
     });

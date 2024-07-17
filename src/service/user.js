@@ -2,10 +2,16 @@
 
 import {get, post, apiURL} from "./util";
 
-export const getUserProfile = async () => {
+export const getUserProfile = async (userId) => {
     // let userId = localStorage.getItem('userId');
-    let userId = 1;
-    let res = await get(`${apiURL}/user/profile/${userId}`);
+    let res = await get(`${apiURL}/user/${userId}`);
+    console.log(res);
+    return res;
+};
+
+export const getSelfProfile = async () => {
+    let res = await get(`${apiURL}/user/self`);
+    // console.log(res);
     return res;
 };
 

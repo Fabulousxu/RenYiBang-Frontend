@@ -2,20 +2,21 @@
 import React, { useEffect, useState } from 'react';
 import BasicLayout from "../component/basic_layout";
 import { Descriptions, Avatar, List, Typography, Tag, Button } from 'antd';
-import { getSelfProfile, getUserTasks } from '../service/user';
+import { getUserProfile, getUserTasks } from '../service/user';
 import {Link} from "react-router-dom";
 import {useParams} from "react-router-dom";
 import { unaccessTask } from '../service/task';
 
 const { Title } = Typography;
 
-export default function ProfilePage() {
+export default function UserPage() {
     const [user, setUser] = useState({});
     const [tasks, setTasks] = useState([]);
     const { id } = useParams();
+    // 获取路径参数
 
     useEffect(() => {
-        getSelfProfile().then(res => {
+        getUserProfile(id).then(res => {
             setUser(res);
         }).catch(err => {
             console.error(err);

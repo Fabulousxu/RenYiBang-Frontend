@@ -31,7 +31,7 @@ export default function BasicLayout(props) {
     }, {
       key: 'message', label: <Link to='/message'>消息</Link>, icon: <MessageOutlined/>
     }, {
-      key: 'profile', label: <Link to='/profile/1'>用户</Link>, icon: <UserOutlined/>
+      key: 'profile', label: <Link to='/profile/self'>用户</Link>, icon: <UserOutlined/>
     }]
   const {token: {colorBgContainer, borderRadiusLG}} = theme.useToken();
   const [current, setCurrent] = useState(props.page)

@@ -4,7 +4,7 @@ export async function get(url) {
   let res = await fetch(url, {
     method: 'GET',
     credentials: 'include',
-    headers: {'jwt': localStorage.getItem('jwt')},
+    headers: {'jwt': localStorage.getItem('jwt') || ''},
   })
   if (res.status !== 200) throw res.status
   res = await res.json()
@@ -16,7 +16,9 @@ export async function post(url, data) {
   console.log(url, data)
   let res = await fetch(url, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json',
+    'jwt': localStorage.getItem('jwt') || ''
+    },
     body: JSON.stringify(data),
     credentials: 'include',
   })
@@ -29,9 +31,11 @@ export async function post(url, data) {
 export async function put(url, data) {
   let res = await fetch(url, {
     method: 'PUT',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json',
+    'jwt': localStorage.getItem('jwt') || ''
+    },
     body: JSON.stringify(data),
-    credentials: 'include'
+    credentials: 'include',
   })
   if (res.status !== 200) throw res.status
   res = await res.json()
@@ -42,7 +46,9 @@ export async function put(url, data) {
 export async function del(url, data) {
   let res = await fetch(url, {
     method: 'DELETE',
-    headers: {'Content-Type': 'application/json'},
+    headers: {'Content-Type': 'application/json',
+    'jwt': localStorage.getItem('jwt') || ''
+    },
     body: JSON.stringify(data),
     credentials: 'include'
   })

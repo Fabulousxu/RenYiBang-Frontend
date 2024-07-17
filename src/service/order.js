@@ -2,8 +2,8 @@ import {apiURL} from "./util";
 import {get, post, put, del} from "./util";
 
 export async function changeOrderStatus(id, status) {
-	const url = `${apiURL}/order/status?id=${id}&status=${status}`;
-	return put(url, {status});
+	const url = `${apiURL}/order/status?orderId=${id}&status=${status}`;
+	return post(url, {status});
 }
 
 export async function fetchInitiatorTasks() {

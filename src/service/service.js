@@ -2,7 +2,7 @@ import {apiURL, get} from "./util";
 
 export async function searchService(keyword, pageSize, pageIndex, order, timeRange, priceRange) {
   let res = await get(`${apiURL}/service/search?keyword=${keyword}&pageSize=${pageSize}&pageIndex=${pageIndex}&order=${order}&timeBegin=${timeRange[0]}&timeEnd=${timeRange[1]}&priceLow=${priceRange[0]}&priceHigh=${priceRange[1]}`)
-  for (let task of res.items) task.url = `/task/${task.taskId}`
+  for (let service of res.items) service.url = `/service/${service.serviceId}`
   return res
 }
 

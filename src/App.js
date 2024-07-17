@@ -12,6 +12,7 @@ import OrderRecipientPage from "./page/order_recipient_page";
 import OrderInitiatorPage from "./page/order_initiator_page";
 import SelectPage from './page/select_page';
 import LoginPage from "./page/login_page";
+import UserPage from "./page/user_page";
 
 export default function App() {
   return (
@@ -28,7 +29,8 @@ export default function App() {
       <Route path='/order/task/initiator/:id' element={<OrderInitiatorPage/>}/>
       <Route path='/order/service/initiator/:id' element={<OrderInitiatorPage/>}/>
       <Route path='/message' element={<MessagePage/>}/>
-      <Route path='/profile/:id' element={<ProfilePage/>}/>
+      <Route path='/profile/:id' element={<UserPage/>}/>
+      <Route path='/profile/self' element={<ProfilePage/>}/>
       <Route path='/issue' element={<IssuePage/>}/>
       <Route path='/select/task/:id' element={<SelectPage/>}/>
       <Route path='/login' element={<LoginPage/>}/>
