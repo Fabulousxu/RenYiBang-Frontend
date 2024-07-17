@@ -1,48 +1,34 @@
-export const apiURL = 'http://localhost:8080/api'
+const credentials = 'include'
 
-export async function get(url) {
-  let res = await fetch(url, {method: 'GET', credentials: 'include'})
+async function responseHandler(res) {
   if (res.status !== 200) throw res.status
   res = await res.json()
   if (!res.ok) throw res.message
   return res.data;
+}
+
+export async function get(url) {
+  let headers = {'jwt': localStorage.getItem('jwt')}
+  let res = await fetch(url, {method: 'GET', headers, credentials})
+  return await responseHandler(res)
 }
 
 export async function post(url, data) {
-  let res = await fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data),
-    credentials: 'include'
-  })
-  if (res.status !== 200) throw res.status
-  res = await res.json()
-  if (!res.ok) throw res.message
-  return res.data;
+  let headers = {'Content-Type': 'application/json', 'jwt': localStorage.getItem('jwt')}
+  let res = await fetch(url, {method: 'POST', headers, body: JSON.stringify(data), credentials})
+  return await responseHandler(res)
 }
 
 export async function put(url, data) {
-  let res = await fetch(url, {
-    method: 'PUT',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data),
-    credentials: 'include'
-  })
-  if (res.status !== 200) throw res.status
-  res = await res.json()
-  if (!res.ok) throw res.message
-  return res.data;
+  let headers = {'Content-Type': 'application/json', 'jwt': localStorage.getItem('jwt')}
+  let res = await fetch(url, {method: 'PUT', headers, body: JSON.stringify(data), credentials})
+  return await responseHandler(res)
 }
 
 export async function del(url, data) {
-  let res = await fetch(url, {
-    method: 'DELETE',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data),
-    credentials: 'include'
-  })
-  if (res.status !== 200) throw res.status
-  res = await res.json()
-  if (!res.ok) throw res.message
-  return res.data;
+  let headers = {'Content-Type': 'application/json', 'jwt': localStorage.getItem('jwt')}
+  let res = await fetch(url, {method: 'DELETE', headers, body: JSON.stringify(data), credentials})
+  return await responseHandler(res)
 }
+
+export const apiURL = process.env.REACT_APP_API_URL

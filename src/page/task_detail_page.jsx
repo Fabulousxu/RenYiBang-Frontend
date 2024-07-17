@@ -77,30 +77,5 @@ export default function TaskDetailPage(props) {
         });
       }}
     />
-    <div style={{
-      position: 'fixed',
-      bottom: '50%',
-      right: '24px',
-      transform: 'translateY(50%)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '16px'
-    }}>
-      <FloatButton
-        shape="circle"
-        type="primary"
-        style={{width: '64px', height: '64px', fontSize: '24px'}}
-        tooltip={<div>聊一聊</div>}
-        icon={<MessageOutlined/>}
-      />
-      <FloatButton
-        shape="circle"
-        type="primary"
-        style={{width: '64px', height: '64px', fontSize: '24px'}}
-        tooltip={<div>接任务</div>}
-        icon={<PayCircleOutlined/>}
-      />
-    </div>
   </BasicLayout>);
 }
