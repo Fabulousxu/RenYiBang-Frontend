@@ -7,8 +7,7 @@ export async function searchTask(keyword, pageSize, pageIndex, order, timeRange,
 }
 
 export async function getTask(taskId) {
-  let res = await get(`${apiURL}/task/${taskId}`)
-  return res
+  return await get(`${apiURL}/task/${taskId}`)
 }
 
 export async function getTaskComment(taskId, pageSize, pageIndex, order) {
@@ -29,7 +28,6 @@ export async function collectTask(taskId) {
 
 export async function uncollectTask(taskId) {
   return await del(`${apiURL}/task/${taskId}/uncollect`)
-
 }
 
 export async function unaccessTask(taskId) {
