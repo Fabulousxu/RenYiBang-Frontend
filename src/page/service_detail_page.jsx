@@ -6,6 +6,7 @@ import CommentList, {totalCommentEntry} from "../component/comment_list";
 import {getService, getServiceComment, getServiceMessage} from "../service/service";
 import {Button, Space} from "antd";
 import {MessageOutlined, PayCircleOutlined} from "@ant-design/icons";
+import {collectService, uncollectService} from "../service/service";
 
 export default function TaskDetailPage(props) {
   const {id} = useParams()
@@ -47,11 +48,36 @@ export default function TaskDetailPage(props) {
     getCommentWhenCommentMode()
   }, [id])
 
+  function handleCollect() {
+    if (detail.collected) {
+      uncollectService(id).then(res => {
+        setDetail({...detail, collected: false});
+      }).catch(err => {
+      });
+    } else {
+      collectService(id).then(res => {
+        setDetail({...detail, collected: true});
+      }).catch(err => {
+      });
+    }
+  }
+
+  function handleChat() {
+    // 将任务发起者添加为聊天对象，跳转到聊天页面
+
+  }
+
+  function handleAccept() {
+    // 接受任务，跳转到任务详情页面
+
+  }
+
   return (<BasicLayout page='task-detail'>
     <ItemDetail detail={detail} descriptionTitle='服务描述' ratingTitle='服务评分:'/>
       <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }} size="large">
-          <Button size="large"><MessageOutlined />聊一聊</Button>
-          <Button type="primary" size="large"><PayCircleOutlined />享服务</Button>
+        {detail.collected ? <Button type="primary" size="large" onClick={handleCollect}>取消收藏</Button> : <Button size="large" onClick={handleCollect}>收藏</Button>}
+          <Button size="large" onClick={handleChat}><MessageOutlined />聊一聊</Button>
+          <Button type="primary" size="large" onClick={handleAccept}><PayCircleOutlined />享服务</Button>
       </Space>
     <div style={{height: '60px'}}></div>
     <CommentList
