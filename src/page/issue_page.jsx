@@ -154,14 +154,18 @@ export default function IssuePage() {
           )}
         </div>
         <div style={{ width: '40%', display: 'flex', 'flex-direction': 'column' }}>
+          <h3 style={{ margin: '20px' }}>请填写标题</h3>
           <Input placeholder="请输入标题" style={{ margin: '20px', width: '80%' }} size='large' value={title} onChange={e => setTitle(e.target.value)}/>
           <h3 style={{ margin: '20px' }}>请选择发布类型</h3>
           <Radio.Group onChange={onRadioChange} value={radioValue} style={{ margin: '20px', width: '80%' }}>
             <Radio value={1}>任务</Radio>
             <Radio value={2}>服务</Radio>
           </Radio.Group>
+          <h3 style={{ margin: '20px' }}>请填写描述</h3>
           <Input.TextArea placeholder="请输入描述" style={{ margin: '20px', width: '80%' }} value={description} onChange={e => setDescription(e.target.value)}/>
+          <h3 style={{ margin: '20px' }}>请填写价格</h3>
           <InputNumber placeholder="初步定价" addonBefore="￥" style={{ margin: '20px', width: '80%' }} value={price} onChange={e => setPrice(e.target.value)}/>
+          <h3 style={{ margin: '20px' }}>请填写最大接单数</h3>
           <InputNumber placeholder="最大接单数" style={{ margin: '20px', width: '80%' }} value={maxAccess} onChange={e => setMaxAccess(e.target.value)}/>
           <Button type="primary" style={{ margin: '20px', width: '100px' }} onClick={handleSubmit}>提交</Button>
         </div>
