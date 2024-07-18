@@ -1,6 +1,6 @@
 import ItemList from "../component/item_list";
 import BasicLayout from "../component/basic_layout";
-import {searchTask} from "../service/task";
+import {collectTask, searchTask, uncollectTask} from "../service/task";
 import {useEffect, useState} from "react";
 import {totalEntry} from "../component/item_list";
 import {message} from "antd";
@@ -49,6 +49,21 @@ export default function TaskPage() {
         }).catch(err => messageApi.open({type: 'error', content: err}))
       }}
       onCollect={index => {
+        if (taskList[index].collected) {
+          uncollectTask(taskList[index].taskId).then(res => {
+            taskList[index].collected = false
+            setTaskList([...taskList])
+            messageApi.open({type: 'success', content: '取消收藏成功'})
+          }).catch(err => messageApi.open({
+            type: 'error', content: err
+          }))
+        } else {
+          collectTask(taskList[index].taskId).then(res => {
+            taskList[index].collected = true
+            setTaskList([...taskList])
+            messageApi.open({type: 'success', content: '收藏成功'})
+          }).catch(err => messageApi.open({type: 'error', content: err}))
+        }
       }}
     />
   </BasicLayout>)

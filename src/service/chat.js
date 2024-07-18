@@ -1,5 +1,5 @@
 const connectWebSocket = ({ userId, onopen, onmessage, onclose }) => {
-  const socket = new WebSocket('ws://localhost:8080/chat');
+  const socket = new WebSocket('ws://localhost:8085/chat');
 
   socket.onopen = () => {
     socket.send(JSON.stringify({ type: 'register', userId: userId }));
