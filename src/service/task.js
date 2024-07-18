@@ -30,6 +30,22 @@ export async function uncollectTask(taskId) {
   return await del(`${apiURL}/task/${taskId}/uncollect`)
 }
 
+export async function likeComment(commentId) {
+  return await put(`${apiURL}/task/comment/${commentId}/like`)
+}
+
+export async function unlikeComment(commentId) {
+  return await del(`${apiURL}/task/comment/${commentId}/unlike`)
+}
+
+export async function likeMessage(messageId) {
+  return await put(`${apiURL}/task/message/${messageId}/like`)
+}
+
+export async function unlikeMessage(messageId) {
+  return await del(`${apiURL}/task/message/${messageId}/unlike`)
+}
+
 export async function unaccessTask(taskId) {
   let res = await del(`${apiURL}/task/${taskId}/unaccess`)
   return res
