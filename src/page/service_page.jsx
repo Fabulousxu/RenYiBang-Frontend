@@ -3,7 +3,8 @@ import BasicLayout from "../component/basic_layout";
 import {useEffect, useState} from "react";
 import {totalEntry} from "../component/item_list";
 import {message} from "antd";
-import {searchService} from "../service/service";
+import {collectService, searchService, uncollectService} from "../service/service";
+import {collectTask, uncollectTask} from "../service/task";
 
 export default function TaskPage() {
   const [total, setTotal] = useState(0)
@@ -49,6 +50,21 @@ export default function TaskPage() {
         }).catch(err => messageApi.open({type: 'error', content: err}))
       }}
       onCollect={index => {
+        if (serviceList[index].collected) {
+          uncollectService(serviceList[index].serviceId).then(res => {
+            serviceList[index].collected = false
+            setServiceList([...serviceList])
+            messageApi.open({type: 'success', content: '取消收藏成功'})
+          }).catch(err => messageApi.open({
+            type: 'error', content: err
+          }))
+        } else {
+          collectService(serviceList[index].serviceId).then(res => {
+            serviceList[index].collected = true
+            setServiceList([...serviceList])
+            messageApi.open({type: 'success', content: '收藏成功'})
+          }).catch(err => messageApi.open({type: 'error', content: err}))
+        }
       }}
     />
   </BasicLayout>)
