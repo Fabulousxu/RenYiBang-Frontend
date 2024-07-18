@@ -3,11 +3,11 @@ import {useParams} from "react-router-dom";
 import ItemDetail from "../component/item_detail";
 import React, {useEffect, useState} from "react";
 import CommentList, {totalCommentEntry} from "../component/comment_list";
-import {accessService, getService, getServiceComment, getServiceMessage} from "../service/service";
-import {Button, Space} from "antd";
-import {MessageOutlined, PayCircleOutlined} from "@ant-design/icons";
+import {accessService, getService, getServiceComment, getServiceMessage, unaccessService} from "../service/service";
+import {Button, message, Space} from "antd";
+import {MessageOutlined, PayCircleOutlined, StarOutlined} from "@ant-design/icons";
 import {collectService, uncollectService} from "../service/service";
-import {accessTask} from "../service/task";
+import {accessTask, collectTask, unaccessTask, uncollectTask} from "../service/task";
 
 export default function TaskDetailPage(props) {
   const {id} = useParams()
@@ -53,12 +53,16 @@ export default function TaskDetailPage(props) {
     if (detail.collected) {
       uncollectService(id).then(res => {
         setDetail({...detail, collected: false});
+        message.success('取消收藏成功');
       }).catch(err => {
+        message.error(err);
       });
     } else {
       collectService(id).then(res => {
         setDetail({...detail, collected: true});
+        message.success('收藏服务成功');
       }).catch(err => {
+        message.error(err);
       });
     }
   }
@@ -69,21 +73,39 @@ export default function TaskDetailPage(props) {
   }
 
   function handleAccept() {
-    // 接受任务，跳转到任务详情页面
-    accessService(id).then(res => {
-      console.log(res);
-      // TODO: 跳转到个人已接取的服务页面
-    }).catch(err => {
-      console.log(err);
-    });
+    // 接取/取消接取任务
+    if (detail.accessed) {
+      unaccessService(id).then(res => {
+        setDetail({...detail, accessed: false});
+        message.success('取消请求成功');
+      }).catch(err => {
+        message.error(err);
+      });
+    } else {
+      accessService(id).then(res => {
+        setDetail({...detail, accessed: true});
+        message.success('请求服务成功');
+      }).catch(err => {
+        // Message
+        message.error(err);
+      });
+    }
   }
 
   return (<BasicLayout page='task-detail'>
     <ItemDetail detail={detail} descriptionTitle='服务描述' ratingTitle='服务评分:'/>
       <Space style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }} size="large">
-        {detail.collected ? <Button type="primary" size="large" onClick={handleCollect}>取消收藏</Button> : <Button size="large" onClick={handleCollect}>收藏</Button>}
+        {detail && detail.collected ? <Button type="primary" size="large" onClick={handleCollect}><StarOutlined/>取消收藏</Button> :
+            <Button size="large" onClick={handleCollect}><StarOutlined/>收藏</Button>}
           <Button size="large" onClick={handleChat}><MessageOutlined />聊一聊</Button>
-          <Button type="primary" size="large" onClick={handleAccept}><PayCircleOutlined />享服务</Button>
+        {detail && detail.status !== 'REMOVE' && detail.status !== 'DELETE' ? (
+            detail.accessed ?
+                <Button type="primary" size="large" onClick={handleAccept}><PayCircleOutlined/>取消请求服务</Button> :
+                <Button size="large" onClick={handleAccept}><PayCircleOutlined/>享服务</Button>
+        ) : (
+            detail && detail.status === 'REMOVE' ? <Button size="large" disabled>服务已被删除</Button> :
+                <Button size="large" disabled>服务已被移除</Button>
+        )}
       </Space>
     <div style={{height: '60px'}}></div>
     <CommentList

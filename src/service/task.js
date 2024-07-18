@@ -30,7 +30,7 @@ export async function accessTask(taskId) {
 }
 
 export async function unaccessTask(taskId) {
-  let res = await get(`${apiURL}/task/${taskId}/unaccess`)
+  let res = await del(`${apiURL}/task/${taskId}/unaccess`)
   return res
 }
 

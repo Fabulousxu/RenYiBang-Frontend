@@ -30,7 +30,7 @@ export async function accessService(serviceId) {
 }
 
 export async function unaccessService(serviceId) {
-  let res = await get(`${apiURL}/service/${serviceId}/unaccess`)
+  let res = await del(`${apiURL}/service/${serviceId}/unaccess`)
   return res
 }
 
