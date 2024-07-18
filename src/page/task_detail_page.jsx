@@ -47,12 +47,63 @@ export default function TaskDetailPage(props) {
     getCommentWhenCommentMode();
   }, [id, getCommentWhenCommentMode]);
 
+  function handleCollect() {
+    if (detail.collected) {
+      uncollectTask(id).then(res => {
+        setDetail({...detail, collected: false});
+        message.success('取消收藏成功');
+      }).catch(err => {
+        message.error(err);
+      });
+    } else {
+      collectTask(id).then(res => {
+        setDetail({...detail, collected: true});
+        message.success('收藏任务成功');
+      }).catch(err => {
+        message.error(err);
+      });
+    }
+  }
+
+  function handleChat() {
+    // 将任务发起者添加为聊天对象，跳转到聊天页面
+
+  }
+
+  function handleAccept() {
+    // 接取/取消接取任务
+    if (detail.accessed) {
+      unaccessTask(id).then(res => {
+        setDetail({...detail, accessed: false});
+        message.success('取消接取成功');
+      }).catch(err => {
+        message.error(err);
+      });
+    } else {
+      accessTask(id).then(res => {
+        setDetail({...detail, accessed: true});
+        message.success('接取任务成功');
+      }).catch(err => {
+        // Message
+        message.error(err);
+      });
+    }
+  }
+
   return (<BasicLayout page="task-detail">
     <ItemDetail detail={detail} descriptionTitle="任务描述" ratingTitle='任务评分:'/>
     <Space style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
-      <Button size='large'><StarOutlined/>收藏</Button>
-      <Button size="large"><MessageOutlined/>聊一聊</Button>
-      <Button type="primary" size="large"><PayCircleOutlined/>接任务</Button>
+      {detail && detail.collected ? <Button type="primary" size="large" onClick={handleCollect}><StarOutlined/>取消收藏</Button> :
+        <Button size="large" onClick={handleCollect}><StarOutlined/>收藏</Button>}
+      <Button size="large" onClick={handleChat}><MessageOutlined/>聊一聊</Button>
+      {detail && detail.status !== 'REMOVE' && detail.status !== 'DELETE' ? (
+          detail.accessed ?
+              <Button type="primary" size="large" onClick={handleAccept}><PayCircleOutlined/>取消接取</Button> :
+              <Button size="large" onClick={handleAccept}><PayCircleOutlined/>接任务</Button>
+      ) : (
+          detail && detail.status === 'REMOVE' ? <Button size="large" disabled>任务已被删除</Button> :
+                <Button size="large" disabled>任务已被移除</Button>
+      )}
     </Space>
     <div style={{height: '60px'}}></div>
     <CommentList
