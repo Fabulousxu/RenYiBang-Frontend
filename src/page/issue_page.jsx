@@ -1,4 +1,4 @@
-import { Button, Input, Upload, Image, Radio, Modal } from 'antd';
+import { Button, Input, Upload, Image, Radio, Modal, InputNumber } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
@@ -10,6 +10,7 @@ export default function IssuePage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(0);
+  const [maxAccess, setMaxAccess] = useState(0);
   const [radioValue, setRadioValue] = useState(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -63,7 +64,7 @@ export default function IssuePage() {
   //单选框设置
 
   const handleSubmit = () => { 
-    if(!title || !description || !price || fileList.length === 0){
+    if(!title || !description || !price || !maxAccess || fileList.length === 0){
       Modal.error({
         title: '请填写完整信息',
         content: '请填写完整信息',
@@ -81,7 +82,8 @@ export default function IssuePage() {
       title: title,
       description: description,
       price: price * 100,
-      images: Base64List
+      images: Base64List,
+      maxAccess: maxAccess,
     }
 
     if(radioValue === 1){
@@ -159,7 +161,8 @@ export default function IssuePage() {
             <Radio value={2}>服务</Radio>
           </Radio.Group>
           <Input.TextArea placeholder="请输入描述" style={{ margin: '20px', width: '80%' }} value={description} onChange={e => setDescription(e.target.value)}/>
-          <Input placeholder="初步定价" addonBefore="￥" style={{ margin: '20px', width: '80%' }} value={price} onChange={e => setPrice(e.target.value)}/>
+          <InputNumber placeholder="初步定价" addonBefore="￥" style={{ margin: '20px', width: '80%' }} value={price} onChange={e => setPrice(e.target.value)}/>
+          <InputNumber placeholder="最大接单数" style={{ margin: '20px', width: '80%' }} value={maxAccess} onChange={e => setMaxAccess(e.target.value)}/>
           <Button type="primary" style={{ margin: '20px', width: '100px' }} onClick={handleSubmit}>提交</Button>
         </div>
       </div>

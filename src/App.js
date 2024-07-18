@@ -33,6 +33,7 @@ export default function App() {
       <Route path='/profile/self' element={<ProfilePage/>}/>
       <Route path='/issue' element={<IssuePage/>}/>
       <Route path='/select/task/:id' element={<SelectPage/>}/>
+      <Route path='/select/service/:id' element={<SelectPage/>}/>
       <Route path='/login' element={<LoginPage/>}/>
     </Routes>
   );
