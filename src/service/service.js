@@ -23,6 +23,12 @@ export async function getServiceMessage(serviceId, pageSize, pageIndex, order) {
   return res
 }
 
+export async function accessService(serviceId) {
+  let res = await put(`${apiURL}/service/${serviceId}/access`)
+  return res
+
+}
+
 export async function unaccessService(serviceId) {
   let res = await get(`${apiURL}/service/${serviceId}/unaccess`)
   return res

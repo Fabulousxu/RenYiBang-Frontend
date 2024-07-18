@@ -23,6 +23,12 @@ export async function getTaskMessage(taskId, pageSize, pageIndex, order) {
   return res
 }
 
+export async function accessTask(taskId) {
+    let res = await put(`${apiURL}/task/${taskId}/access`)
+    return res
+
+}
+
 export async function unaccessTask(taskId) {
   let res = await get(`${apiURL}/task/${taskId}/unaccess`)
   return res

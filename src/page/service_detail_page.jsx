@@ -3,10 +3,11 @@ import {useParams} from "react-router-dom";
 import ItemDetail from "../component/item_detail";
 import React, {useEffect, useState} from "react";
 import CommentList, {totalCommentEntry} from "../component/comment_list";
-import {getService, getServiceComment, getServiceMessage} from "../service/service";
+import {accessService, getService, getServiceComment, getServiceMessage} from "../service/service";
 import {Button, Space} from "antd";
 import {MessageOutlined, PayCircleOutlined} from "@ant-design/icons";
 import {collectService, uncollectService} from "../service/service";
+import {accessTask} from "../service/task";
 
 export default function TaskDetailPage(props) {
   const {id} = useParams()
@@ -69,7 +70,12 @@ export default function TaskDetailPage(props) {
 
   function handleAccept() {
     // 接受任务，跳转到任务详情页面
-
+    accessService(id).then(res => {
+      console.log(res);
+      // TODO: 跳转到个人已接取的服务页面
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   return (<BasicLayout page='task-detail'>
