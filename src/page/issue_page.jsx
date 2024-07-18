@@ -1,5 +1,6 @@
 import { Button, Input, Upload, Image, Radio, Modal } from 'antd';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import BasicLayout from '../component/basic_layout';
 import { issueService, issueTask } from '../service/issue';
@@ -12,9 +13,9 @@ export default function IssuePage() {
   const [radioValue, setRadioValue] = useState(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [fileList, setFileList] = useState([
-  ]);
+  const [fileList, setFileList] = useState([]);
   const [Base64List, setBase64List] = useState([]);
+  const navigate = useNavigate();
 
   const beforeUpload = (file) => {  
     // 阻止文件自动上传
@@ -88,6 +89,9 @@ export default function IssuePage() {
         Modal.success({
           title: '发布成功',
           content: '发布成功',
+          onOk: () => {
+            navigate('/task');
+          }
         });
       }).catch(err => {
         Modal.error({
@@ -102,6 +106,9 @@ export default function IssuePage() {
         Modal.success({
           title: '发布成功',
           content: '发布成功',
+          onOk: () => {
+            navigate('/service');
+          }
         });
       }).catch(err => {
         Modal.error({
