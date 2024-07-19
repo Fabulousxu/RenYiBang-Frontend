@@ -3,7 +3,17 @@ import BasicLayout from "../component/basic_layout";
 import ItemDetail from "../component/item_detail";
 import CommentList, {totalCommentEntry} from "../component/comment_list";
 import {
-  getTask, getTaskComment, getTaskMessage, likeComment, likeMessage, unlikeComment, unlikeMessage
+  accessTask,
+  collectTask,
+  getTask,
+  getTaskComment,
+  getTaskMessage,
+  likeComment,
+  likeMessage,
+  unaccessTask,
+  uncollectTask,
+  unlikeComment,
+  unlikeMessage
 } from "../service/task";
 import {MessageOutlined, PayCircleOutlined, StarOutlined} from "@ant-design/icons";
 import {Button, FloatButton, message, Space} from "antd";
@@ -20,21 +30,21 @@ export default function TaskDetailPage(props) {
   const [messageApi, contextHolder] = message.useMessage()
 
   const getCommentWhenCommentMode = useCallback(() => {
-    getTaskComment(id, totalCommentEntry, 0, 'time').then(res => {
+    getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
       setCommentTotal(res.total);
       setCommentList(res.items);
     }).catch(err => messageApi.open({type: 'error', content: err}))
-    getTaskMessage(id, totalCommentEntry, 0, 'time').then(res => {
+    getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
       setMessageTotal(res.total);
     }).catch(err => messageApi.open({type: 'error', content: err}))
   }, [id]);
 
   const getCommentWhenMessageMode = () => {
-    getTaskMessage(id, totalCommentEntry, 0, 'time').then(res => {
+    getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
       setMessageTotal(res.total);
       setCommentList(res.items);
     }).catch(err => messageApi.open({type: 'error', content: err}))
-    getTaskComment(id, totalCommentEntry, 0, 'time').then(res => {
+    getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
       setCommentTotal(res.total);
     }).catch(err => messageApi.open({type: 'error', content: err}))
   };
@@ -93,17 +103,16 @@ export default function TaskDetailPage(props) {
   return (<BasicLayout page="task-detail">
     <ItemDetail detail={detail} descriptionTitle="任务描述" ratingTitle='任务评分:'/>
     <Space style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
-      {detail && detail.collected ? <Button type="primary" size="large" onClick={handleCollect}><StarOutlined/>取消收藏</Button> :
+      {detail && detail.collected ? <Button type="primary" size="large"
+                                            onClick={handleCollect}><StarOutlined/>取消收藏</Button> :
         <Button size="large" onClick={handleCollect}><StarOutlined/>收藏</Button>}
       <Button size="large" onClick={handleChat}><MessageOutlined/>聊一聊</Button>
-      {detail && detail.status !== 'REMOVE' && detail.status !== 'DELETE' ? (
-          detail.accessed ?
-              <Button type="primary" size="large" onClick={handleAccept}><PayCircleOutlined/>取消接取</Button> :
-              <Button size="large" onClick={handleAccept}><PayCircleOutlined/>接任务</Button>
-      ) : (
-          detail && detail.status === 'REMOVE' ? <Button size="large" disabled>任务已被删除</Button> :
-                <Button size="large" disabled>任务已被移除</Button>
-      )}
+      {detail && detail.status !== 'REMOVE' && detail.status !== 'DELETE' ? (detail.accessed ?
+        <Button type="primary" size="large"
+                onClick={handleAccept}><PayCircleOutlined/>取消接取</Button> : <Button size="large"
+                                                                                       onClick={handleAccept}><PayCircleOutlined/>接任务</Button>) : (detail && detail.status === 'REMOVE' ?
+        <Button size="large" disabled>任务已被删除</Button> :
+        <Button size="large" disabled>任务已被移除</Button>)}
     </Space>
     <div style={{height: '60px'}}></div>
     <CommentList
@@ -118,11 +127,19 @@ export default function TaskDetailPage(props) {
         (key === 'comment' ? getCommentWhenCommentMode : getCommentWhenMessageMode)();
       }}
       onChange={(page, pageSize) => {
-        (mode === 'comment' ? getTaskComment : getTaskMessage)(id, pageSize, page - 1, 'time')
+        (mode === 'comment' ? getTaskComment : getTaskMessage)(id, pageSize, page - 1, 'likes')
           .then(res => {
             setCommentTotal(res.total);
             setCommentList(res.items);
             setCurrentPage(page);
+          }).catch(err => messageApi.open({type: 'error', content: err}))
+      }}
+      onChangeOrder={order => {
+        (mode === 'comment' ? getTaskComment : getTaskMessage)(id, totalCommentEntry, 0, order)
+          .then(res => {
+            setCommentTotal(res.total);
+            setCommentList(res.items);
+            setCurrentPage(1);
           }).catch(err => messageApi.open({type: 'error', content: err}))
       }}
       onLike={index => {
