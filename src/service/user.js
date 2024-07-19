@@ -15,9 +15,22 @@ export const getSelfProfile = async () => {
     return res;
 };
 
-export const  getUserTasks = async () => {
-    // let userId = localStorage.getItem('userId');
-    let userId = 1;
-    let res = await get(`${apiURL}/order/task/recipient/${userId}?capacity=10`);
-    return res;
-};
+export async function fetchInitiatorTasks(pageSize, pageIndex) {
+    const url = `${apiURL}/task/initiator/self?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+    return get(url);
+}
+
+export async function fetchRecipientTasks(pageSize, pageIndex) {
+    const url = `${apiURL}/task/recipient/self?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+    return get(url);
+}
+
+export async function fetchInitiatorServices(pageSize, pageIndex) {
+    const url = `${apiURL}/service/initiator/self?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+    return get(url);
+}
+
+export async function fetchRecipientServices(pageSize, pageIndex) {
+    const url = `${apiURL}/service/recipient/self?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+    return get(url);
+}

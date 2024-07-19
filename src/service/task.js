@@ -55,3 +55,22 @@ export async function unaccessTask(taskId) {
   let res = await del(`${apiURL}/task/${taskId}/unaccess`)
   return res
 }
+
+// 发布者获取接取人列表
+// /api/task/{taskId}/select/info
+export async function getTaskSelectInfo(taskId, pageSize, pageIndex) {
+  console.log("getTaskSelectInfo", taskId, pageSize, pageIndex);
+  return await get(`${apiURL}/task/${taskId}/select/info?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+}
+
+// 发布者取消已发布的任务
+// /api/task/{taskId}/cancel
+export async function cancelTask(taskId) {
+  return await del(`${apiURL}/task/${taskId}/cancel`);
+}
+
+// 发布者选择接取人，创建订单
+// /api/task/{taskId}/select/confirm
+export async function confirmSelectTask(taskId, userList) {
+  return await put(`${apiURL}/task/${taskId}/select/confirm`, {userList});
+}

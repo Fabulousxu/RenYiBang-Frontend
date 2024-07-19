@@ -44,3 +44,15 @@ export async function uncollectService(serviceId) {
   let res = await del(`${apiURL}/service/${serviceId}/uncollect`)
   return res
 }
+
+export async function getServiceSelectInfo(taskId, pageSize, pageIndex) {
+  return await get(`${apiURL}/service/${taskId}/select/info?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+}
+
+export async function cancelService(serviceId) {
+  return await del(`${apiURL}/service/${serviceId}/cancel`);
+}
+
+export async function confirmSelectService(serviceId, userList) {
+  return await put(`${apiURL}/service/${serviceId}/select`, {userList});
+}

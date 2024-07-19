@@ -21,12 +21,6 @@ export default function UserPage() {
         }).catch(err => {
             console.error(err);
         });
-
-        getUserTasks().then(res => {
-            setTasks(res);
-        }).catch(err => {
-            console.error(err);
-        });
     }, []);
 
     return (
@@ -46,25 +40,25 @@ export default function UserPage() {
                 <Descriptions.Item label="余额">{(user.balance / 100).toFixed(2)}元</Descriptions.Item>
             </Descriptions>
 
-            <Title level={3} style={{ marginTop: 24 }}>接收的任务</Title>
-            <List
-                itemLayout="horizontal"
-                dataSource={tasks}
-                renderItem={task => (
-                    <List.Item>
-                        {/*id,title,status,rating,time*/}
-                        <List.Item.Meta
-                            title={<Link to={`/task/${task.id}`}>{task.title}</Link>}
-                            description={<>
-                                <Tag color="blue">{task.rating}</Tag>
-                                <Tag color="green">{task.time}</Tag>
-                            </>}
-                        />
-                        <div>{task.status}</div>
-                        <Button type="danger" onClick={() => unaccessTask(task.id)}>取消接取任务</Button>
-                    </List.Item>
-                )}
-            />
+            {/*<Title level={3} style={{ marginTop: 24 }}>接收的任务</Title>*/}
+            {/*<List*/}
+            {/*    itemLayout="horizontal"*/}
+            {/*    dataSource={tasks}*/}
+            {/*    renderItem={task => (*/}
+            {/*        <List.Item>*/}
+            {/*            /!*id,title,status,rating,time*!/*/}
+            {/*            <List.Item.Meta*/}
+            {/*                title={<Link to={`/task/${task.id}`}>{task.title}</Link>}*/}
+            {/*                description={<>*/}
+            {/*                    <Tag color="blue">{task.rating}</Tag>*/}
+            {/*                    <Tag color="green">{task.time}</Tag>*/}
+            {/*                </>}*/}
+            {/*            />*/}
+            {/*            <div>{task.status}</div>*/}
+            {/*            <Button type="danger" onClick={() => unaccessTask(task.id)}>取消接取任务</Button>*/}
+            {/*        </List.Item>*/}
+            {/*    )}*/}
+            {/*/>*/}
         </BasicLayout>
     );
 }
