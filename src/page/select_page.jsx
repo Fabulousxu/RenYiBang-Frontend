@@ -23,9 +23,11 @@ export default function SelectPage() {
 
     const fetchdata = async () => {
         if (isTask) {
-            setTask(await getTask(taskId));
+            let data = await getTask(taskId);
+            setTask(data.data);
         } else if (isService) {
-            setTask(await getService(taskId));
+            let data = await getService(taskId);
+            setTask(data.data);
         }
     };
 
