@@ -1,8 +1,10 @@
-const connectWebSocket = ({ userId, onopen, onmessage, onclose }) => {
+import {apiURL, get} from "./util";
+
+export default function connectWebSocket({userId, onopen, onmessage, onclose}) {
   const socket = new WebSocket('ws://localhost:8085/chat');
 
   socket.onopen = () => {
-    socket.send(JSON.stringify({ type: 'register', userId: userId }));
+    socket.send(JSON.stringify({type: 'register', userId: userId}));
     if (onopen) onopen();
   };
 
@@ -17,11 +19,13 @@ const connectWebSocket = ({ userId, onopen, onmessage, onclose }) => {
   return {
     send: (message) => {
       socket.send(JSON.stringify(message));
-    },
-    close: () => {
+    }, close: () => {
       socket.close();
     },
   };
 };
 
-export default connectWebSocket;
+export async function getChatList() {
+  return await get(`${apiURL}/chat/list`)
+}
+

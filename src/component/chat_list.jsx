@@ -1,37 +1,36 @@
 import React from 'react';
-import { List, Avatar } from 'antd';
+import {List, Avatar, Row, Card, Col} from 'antd';
 
-const chatData = [
-  {
-    title: 'User 1',
-    senderId: 2,
-    receiverId:12,
-    taskChatId: 1,
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=1',
-  },
-  {
-    title: 'User 2',
-    senderId: 12,
-    receiverId: 2,
-    taskChatId: 1,
-    avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=2',
-  },
-  // Add more chat data as needed
-];
-
-const ChatList = ({ onChatSelect }) => (
-  <List
+export default function ChatList(props) {
+  return (<List
     itemLayout="horizontal"
-    dataSource={chatData}
-    renderItem={(item) => (
-      <List.Item onClick={() => onChatSelect(item)}>
-        <List.Item.Meta
-          avatar={<Avatar src={item.avatar} />}
-          title={item.title}
-        />
-      </List.Item>
-    )}
-  />
-);
-
-export default ChatList;
+    dataSource={props.list}
+    renderItem={(item, index) => <List.Item onClick={() => props.onChat(item)}>
+      <Row style={{width: '100%'}}>
+        <Col style={{flexGrow: 1}}>
+          <List.Item.Meta
+            avatar={<Avatar src={item?.chatter.avatar}/>}
+            title={item?.chatter.nickname}
+            description={<div style={{
+              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+            }}>{item?.lastMessageContent}</div>}
+          />
+        </Col>
+        <Col style={{display: 'flex', flexDirection: 'column', alignItems: 'end'}}>
+          <div style={{color: 'gray'}}>{item?.lastMessageCreatedAt}</div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            backgroundColor: 'red',
+            width: '20px',
+            height: '20px',
+            borderRadius: '100%',
+            visibility: item?.unreadCount > 0 ? 'visible' : 'hidden'
+          }}>{item?.unreadCount > 99 ? 99 : item?.unreadCount}</div>
+        </Col>
+      </Row>
+    </List.Item>}
+  />);
+}
