@@ -46,9 +46,13 @@ export async function unlikeMessage(messageId) {
   return await del(`${apiURL}/task/message/${messageId}/unlike`)
 }
 
+export async function putMessage(taskId, content) {
+  return await put(`${apiURL}/task/${taskId}/message`, {content})
+}
+
 export async function accessTask(taskId) {
-    let res = await put(`${apiURL}/task/${taskId}/access`)
-    return res
+  let res = await put(`${apiURL}/task/${taskId}/access`)
+  return res
 }
 
 export async function unaccessTask(taskId) {

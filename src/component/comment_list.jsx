@@ -2,11 +2,13 @@ import {Avatar, Button, Col, List, Pagination, Radio, Rate, Row, Tabs} from "ant
 import Item from "antd/es/list/Item";
 import {Link} from "react-router-dom";
 import {LikeFilled, LikeOutlined} from "@ant-design/icons";
-import {useState} from "react";
+import React, {useState} from "react";
+import TextArea from "antd/es/input/TextArea";
 
 export const totalCommentEntry = 10
 
 export default function CommentList(props) {
+  const [message, setMessage] = useState('')
   const [orderValue, setOrderValue] = useState('likes')
 
   const list = (<List
@@ -48,6 +50,22 @@ export default function CommentList(props) {
   />)
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+      <Row style={{width: '70%', alignItems: 'center', paddingBottom: '2rem'}}>
+        <Col style={{flexGrow: 1}}>
+          <TextArea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder='留言'
+            style={{flexGrow: 1, height: '3rem'}}
+          />
+        </Col>
+        <Col style={{marginLeft: '15px'}}>
+          <Button type="primary" onClick={() => {
+            props.onMessage(message)
+            setMessage('')
+          }}>留言</Button>
+        </Col>
+      </Row>
       <Tabs
         type='card'
         style={{width: '100%'}}
