@@ -95,7 +95,7 @@ export default function ChatWindow(props) {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="输入消息"
           onPressEnter={handleSend}
-          style={{flexGrow: 1, height: '3rem'}}
+          style={{height: '3rem'}}
         />
       </Col>
       <Col style={{marginLeft: '15px'}}>

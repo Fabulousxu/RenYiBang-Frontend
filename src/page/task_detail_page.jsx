@@ -10,6 +10,7 @@ import {
   getTaskMessage,
   likeComment,
   likeMessage,
+  putMessage,
   unaccessTask,
   uncollectTask,
   unlikeComment,
@@ -121,6 +122,11 @@ export default function TaskDetailPage(props) {
       list={commentList}
       total={mode === 'comment' ? commentTotal : messageTotal}
       currentPage={currentPage}
+      onMessage={message => {
+        putMessage(id, message).then(res => {
+          messageApi.open({type: 'success', content: '留言成功'})
+        }).catch(err => messageApi.open({type: 'error', content: err}))
+      }}
       onChangeMode={key => {
         setMode(key);
         setCurrentPage(0);
