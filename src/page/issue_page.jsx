@@ -164,9 +164,9 @@ export default function IssuePage() {
           <h3 style={{ margin: '20px' }}>请填写描述</h3>
           <Input.TextArea placeholder="请输入描述" style={{ margin: '20px', width: '80%' }} value={description} onChange={e => setDescription(e.target.value)}/>
           <h3 style={{ margin: '20px' }}>请填写价格</h3>
-          <InputNumber placeholder="初步定价" addonBefore="￥" style={{ margin: '20px', width: '80%' }} value={price} onChange={e => setPrice(e.target.value)}/>
+          <InputNumber placeholder="初步定价" addonBefore="￥" style={{ margin: '20px', width: '80%' }} value={price} onChange={value => setPrice(value)}/>
           <h3 style={{ margin: '20px' }}>请填写最大接单数</h3>
-          <InputNumber placeholder="最大接单数" style={{ margin: '20px', width: '80%' }} value={maxAccess} onChange={e => setMaxAccess(e.target.value)}/>
+          <InputNumber placeholder="最大接单数" style={{ margin: '20px', width: '80%' }} value={maxAccess} onChange={value => setMaxAccess(value)}/>
           <Button type="primary" style={{ margin: '20px', width: '100px' }} onClick={handleSubmit}>提交</Button>
         </div>
       </div>
