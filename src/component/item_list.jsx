@@ -129,12 +129,14 @@ export default function ItemList(props) {
               />
             </div>}
             actions={[<div>{props.ratingTitle}{(props.list[index]?.rating / 10).toFixed(1)}</div>,
-              <Button icon={props.list[index]?.collected ? <StarFilled/> : <StarOutlined/>}
-                      onClick={e => {
-                        e.preventDefault()
-                        props.onCollect(index)
-                      }}
-                      style={{border: 'none', height: 'auto'}}/>]}
+              <Button
+                icon={props.list[index]?.collected ? <StarFilled/> : <StarOutlined/>}
+                size='middle'
+                onClick={e => {
+                  e.preventDefault()
+                  props.onCollect(index)
+                }}
+                style={{border: 'none', height: 'auto', borderRadius: '100%'}}/>]}
           >
             <Row style={{alignItems: 'center'}}>
               <Col>

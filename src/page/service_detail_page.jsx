@@ -7,7 +7,7 @@ import {accessService, getService, getServiceComment, getServiceMessage, unacces
 import {Button, message, Space} from "antd";
 import {MessageOutlined, PayCircleOutlined, StarOutlined} from "@ant-design/icons";
 import {collectService, uncollectService} from "../service/service";
-import {accessTask, collectTask, unaccessTask, uncollectTask} from "../service/task";
+import {getTaskComment, getTaskMessage, likeComment, likeMessage, unlikeComment, unlikeMessage} from "../service/task";
 
 export default function TaskDetailPage(props) {
   const {id} = useParams()
@@ -17,6 +17,7 @@ export default function TaskDetailPage(props) {
   const [messageTotal, setMessageTotal] = useState(0)
   const [commentList, setCommentList] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
+  const [messageApi, contextHolder] = message.useMessage()
 
   const getCommentWhenCommentMode = () => {
     getServiceComment(id, totalCommentEntry, 0, 'time').then(res => {
@@ -109,26 +110,49 @@ export default function TaskDetailPage(props) {
       </Space>
     <div style={{height: '60px'}}></div>
     <CommentList
-      commentTotal={commentTotal}
-      messageTotal={messageTotal}
-      list={commentList}
-      total={mode === 'comment' ? commentTotal : messageTotal}
-      currentPage={currentPage}
-      onChangeMode={key => {
-        setMode(key)
-        setCurrentPage(0);
-        (key === 'comment' ? getCommentWhenCommentMode : getCommentWhenMessageMode)()
-      }}
-
-      onChange={(page, pageSize) => {
-        (mode === 'comment' ? getServiceComment : getServiceMessage)(id, pageSize, page - 1)
-          .then(res => {
-            setCommentTotal(res.total)
-            setCommentList(res.items)
-            setCurrentPage(page)
-          }).catch(err => {
-        })
-      }}
+        commentTotal={commentTotal}
+        messageTotal={messageTotal}
+        list={commentList}
+        total={mode === 'comment' ? commentTotal : messageTotal}
+        currentPage={currentPage}
+        onChangeMode={key => {
+          setMode(key);
+          setCurrentPage(0);
+          (key === 'comment' ? getCommentWhenCommentMode : getCommentWhenMessageMode)();
+        }}
+        onChange={(page, pageSize) => {
+          (mode === 'comment' ? getServiceComment : getServiceMessage)(id, pageSize, page - 1, 'likes')
+              .then(res => {
+                setCommentTotal(res.total);
+                setCommentList(res.items);
+                setCurrentPage(page);
+              }).catch(err => messageApi.open({type: 'error', content: err}))
+        }}
+        onChangeOrder={order => {
+          (mode === 'comment' ? getServiceComment : getServiceMessage)(id, totalCommentEntry, 0, order)
+              .then(res => {
+                setCommentTotal(res.total);
+                setCommentList(res.items);
+                setCurrentPage(1);
+              }).catch(err => messageApi.open({type: 'error', content: err}))
+        }}
+        onLike={index => {
+          if (commentList[index].liked) {
+            (mode === 'comment' ? unlikeComment : unlikeMessage)(mode === 'comment' ? commentList[index].taskCommentId : commentList[index].taskMessageId).then(res => {
+              commentList[index].liked = false
+              commentList[index].likedNumber--
+              setCommentList([...commentList])
+              messageApi.open({type: 'success', content: '取消点赞成功'})
+            }).catch(err => messageApi.open({type: 'error', content: err}))
+          } else {
+            (mode === 'comment' ? likeComment : likeMessage)(mode === 'comment' ? commentList[index].taskCommentId : commentList[index].taskMessageId).then(res => {
+              commentList[index].liked = true
+              commentList[index].likedNumber++
+              setCommentList([...commentList])
+              messageApi.open({type: 'success', content: '点赞成功'})
+            }).catch(err => messageApi.open({type: 'error', content: err}))
+          }
+        }}
     />
 
   </BasicLayout>)
