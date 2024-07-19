@@ -26,7 +26,7 @@ export async function fetchRecipientServices() {
 	return get(url);
 }
 
-export async function fetchOrderById(id, isTask) {
+export async function fetchOrderById(id) {
 	const url = `${apiURL}/order/${id}`;
 	return get(url);
 }

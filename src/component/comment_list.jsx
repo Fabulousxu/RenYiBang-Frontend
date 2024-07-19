@@ -1,6 +1,7 @@
-import {Avatar, Col, List, Pagination, Rate, Row, Tabs} from "antd";
+import {Avatar, Button, Col, List, Pagination, Rate, Row, Tabs} from "antd";
 import Item from "antd/es/list/Item";
 import {Link} from "react-router-dom";
+import {LikeFilled, LikeOutlined} from "@ant-design/icons";
 
 export const totalCommentEntry = 10
 
@@ -28,6 +29,16 @@ export default function CommentList(props) {
         </Col>
       </Row>
       <p style={{width: '100%', paddingLeft: '48px'}}>{item.content}</p>
+      <Row style={{width: '100%', paddingLeft: '48px', alignItems: 'center'}}>
+        <Col style={{paddingRight: '10px '}}>
+          <Button
+            icon={item.liked ? <LikeFilled/> : <LikeOutlined/>}
+            style={{border: 'none'}}
+            onClick={() => props.onLike(index)}
+          />
+        </Col>
+        <Col>{item.likedNumber}</Col>
+      </Row>
     </Item>)}
   />)
   return (
