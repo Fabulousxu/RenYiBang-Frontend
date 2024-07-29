@@ -15,7 +15,6 @@ export default function IssuePage() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [fileList, setFileList] = useState([]);
-  const [Base64List, setBase64List] = useState([]);
   const navigate = useNavigate();
 
   const beforeUpload = (file) => {  
@@ -24,11 +23,15 @@ export default function IssuePage() {
     return false;
   };
 
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-};
+  const getBase64 = (img) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => resolve(reader.result));
+      reader.addEventListener('error', reject);
+      reader.readAsDataURL(img);
+    });
+  };
+
 
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -63,6 +66,12 @@ export default function IssuePage() {
   };
   //单选框设置
 
+  const getAllPictures = async () => {
+    const promises = fileList.map((file) => getBase64(file.originFileObj));
+    const base64List = await Promise.all(promises);
+    return base64List;
+  };
+
   const handleSubmit = () => { 
     if(!title || !description || !price || !maxAccess || fileList.length === 0){
       Modal.error({
@@ -72,53 +81,53 @@ export default function IssuePage() {
       return;
     }
 
-    fileList.map(file => {
-      getBase64(file.originFileObj, imageBase64 => {
-        setBase64List(prevList => [...prevList, imageBase64]);
-      });
+    getAllPictures().then(Base64List => {
+
+      console.log(Base64List);
+
+      let newitem = {
+        title: title,
+        description: description,
+        price: price * 100,
+        images: Base64List,
+        maxAccess: maxAccess,
+      }
+
+      if(radioValue === 1){
+        issueTask(newitem).then(res => {
+          Modal.success({
+            title: '发布成功',
+            content: '发布成功',
+            onOk: () => {
+              navigate('/task');
+            }
+          });
+        }).catch(err => {
+          Modal.error({
+            title: '发布失败',
+            content: err,
+          });
+
+        })
+      }
+      else if(radioValue === 2){
+        issueService(newitem).then(res => {
+          Modal.success({
+            title: '发布成功',
+            content: '发布成功',
+            onOk: () => {
+              navigate('/service');
+            }
+          });
+        }).catch(err => {
+          Modal.error({
+            title: '发布失败',
+            content: err,
+          });
+        })
+      }
+
     });
-
-    let newitem = {
-      title: title,
-      description: description,
-      price: price * 100,
-      images: Base64List,
-      maxAccess: maxAccess,
-    }
-
-    if(radioValue === 1){
-      issueTask(newitem).then(res => {
-        Modal.success({
-          title: '发布成功',
-          content: '发布成功',
-          onOk: () => {
-            navigate('/task');
-          }
-        });
-      }).catch(err => {
-        Modal.error({
-          title: '发布失败',
-          content: err,
-        });
-
-      })
-    }
-    else if(radioValue === 2){
-      issueService(newitem).then(res => {
-        Modal.success({
-          title: '发布成功',
-          content: '发布成功',
-          onOk: () => {
-            navigate('/service');
-          }
-        });
-      }).catch(err => {
-        Modal.error({
-          title: '发布失败',
-          content: err,
-        });
-      })
-    }
   }
 
   return(
