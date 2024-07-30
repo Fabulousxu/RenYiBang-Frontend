@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Image, Button } from "antd";
+import {Table, Image, Button, Modal} from "antd";
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import BasicLayout from "../component/basic_layout";
@@ -22,18 +22,36 @@ export default function SelectPage() {
     let { id } = useParams();
 
     const handleClick = () => {
-        console.log(selectedperson);
+        // 提取selectedperson的userId，组成新数组
+        let userList = selectedperson.map(person => person.userId);
 
         if (isTask) {
-            if (selectedperson) {
-                confirmSelectTask(id, selectedperson.userId).then(res => {
+            if (userList) {
+                confirmSelectTask(id, userList).then(res => {
                     setFlag(true);
+
+                    Modal.success({
+                        title: "生成订单成功",
+                        content: "请在订单页面查看",
+                        onOk: () => {
+                            window.location.href = "/order";
+                        }
+
+                    });
                 });
             }
         }else{
-            if (selectedperson) {
-                confirmSelectService(id, selectedperson.userId).then(res => {
+            if (userList) {
+                confirmSelectService(id, userList).then(res => {
                     setFlag(true);
+
+                    Modal.success({
+                        title: "生成订单成功",
+                        content: "请在订单页面查看",
+                        onOk: () => {
+                            window.location.href = "/order";
+                        }
+                    });
                 });
             }
         }

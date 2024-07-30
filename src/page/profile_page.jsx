@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import BasicLayout from "../component/basic_layout";
-import { Descriptions, Avatar, Typography, Button, Table, Tabs } from 'antd';
+import {Descriptions, Avatar, Typography, Button, Table, Tabs, Modal} from 'antd';
 import { getSelfProfile } from '../service/user';
 import {Link, Navigate, useParams} from "react-router-dom";
 import {cancelTask, unaccessTask} from '../service/task';
@@ -110,7 +110,15 @@ export default function ProfilePage() {
         title: '操作',
         key: 'action',
         render: (text, record) => (
-            <Button type="primary" onClick={() => unaccessTask(record.taskId)}>取消接取</Button>
+            <Button type="primary" onClick={() => unaccessTask(record.taskId).then(res => {
+                // 删除本条记录
+                Modal.success({
+                    title: '取消接取成功',
+                    content: '取消接取成功',
+                });
+                setData(data.filter(item => item.taskId !== record.taskId));
+            }
+            )}>取消接取</Button>
         ),
     }];
 
@@ -159,7 +167,15 @@ export default function ProfilePage() {
         title: '操作',
         key: 'action',
         render: (text, record) => (
-            <Button type="primary" onClick={() => unaccessService(record.serviceId)}>取消接取</Button>
+            <Button type="primary" onClick={() => unaccessService(record.serviceId).then(res => {
+                    // 删除本条记录
+                    Modal.success({
+                        title: '取消接取成功',
+                        content: '取消接取成功',
+                    });
+                    setData(data.filter(item => item.serviceId !== record.serviceId));
+                }
+            )}>取消接取</Button>
         ),
     }];
 

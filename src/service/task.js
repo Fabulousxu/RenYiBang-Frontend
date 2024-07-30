@@ -63,7 +63,6 @@ export async function unaccessTask(taskId) {
 // 发布者获取接取人列表
 // /api/task/{taskId}/select/info
 export async function getTaskSelectInfo(taskId, pageSize, pageIndex) {
-  console.log("getTaskSelectInfo", taskId, pageSize, pageIndex);
   return await get(`${apiURL}/task/${taskId}/select/info?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 }
 
