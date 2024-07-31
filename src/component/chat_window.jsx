@@ -5,21 +5,25 @@ import {getChatHistory} from "../service/chat";
 
 export default function ChatWindow(props) {
   const selfId = props.self?.userId
+  const [hasHistory, setHasHistory] = useState(true)
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const messagesEndRef = useRef(null)
   const getHistory = () => {
+    if (!hasHistory) return
     getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
       .then(res => {
-        setMessages(messages => setMessages([...res.reverse(), ...messages]))
+        if (res.length === 0) {
+          setHasHistory(false)
+          return
+        }
+        setMessages(messages => [...res.reverse(), ...messages])
       }).catch(error => console.error(error))
   }
   const onsend = () => {
     if (message) {
       props.socket.send({
-        type: '',
-        chatId: props.chat?.chatId,
-        content: message
+        type: '', chatId: props.chat?.chatId, content: message
       })
       setMessage('')
     }
@@ -28,9 +32,9 @@ export default function ChatWindow(props) {
   useEffect(() => {
     getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
       .then(res => {
-
         setMessages(res.reverse())
         messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
+        setHasHistory(true)
       }).catch(error => console.error(error))
   }, [props.chat])
 
@@ -55,7 +59,10 @@ export default function ChatWindow(props) {
       flexDirection: 'column',
       alignItems: 'center',
     }}>
-      <a style={{fontSize: '0.8rem'}}>获取更多聊天记录</a>
+      <a onClick={getHistory}
+         style={{
+           fontSize: '0.8rem', color: hasHistory ? '' : 'gray'
+         }}>{hasHistory ? '获取更多聊天记录' : '无更多聊天记录'}< /a>
       <List
         dataSource={messages}
         style={{width: '100%'}}
