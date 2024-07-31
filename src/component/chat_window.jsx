@@ -15,12 +15,20 @@ export default function ChatWindow(props) {
       }).catch(error => console.error(error))
   }
   const onsend = () => {
+    if (message) {
+      props.socket.send({
+        type: '',
+        chatId: props.chat?.chatId,
+        content: message
+      })
+      setMessage('')
+    }
   }
 
   useEffect(() => {
     getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
       .then(res => {
-        
+
         setMessages(res.reverse())
         messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
       }).catch(error => console.error(error))
