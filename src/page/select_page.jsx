@@ -7,6 +7,10 @@ import ImageGallery from "../component/image_gallary";
 import { getTask, getTaskSelectInfo, confirmSelectTask } from "../service/task";
 import { getService, getServiceSelectInfo, confirmSelectService } from "../service/service";
 import useSyncCallback from "../util/useSyncCallback";
+import { refuseSelectTask} from "../service/task";
+import { refuseSelectService } from "../service/service";
+import { getServiceSuccessPeople, getServiceRefusePeople } from "../service/service";
+import { getTaskSuccessPeople, getTaskRefusePeople } from "../service/task";
 
 export default function SelectPage() {
     const [selectedperson, setSelectedPerson] = useState();
@@ -20,6 +24,8 @@ export default function SelectPage() {
     const isService = location.pathname.includes("service");
     const [proposers, setProposers] = useState([]);
     let { id } = useParams();
+    const [succeedPeople, setSucceedPeople] = useState([]);
+    const [refusePeople, setRefusePeople] = useState([]);
 
     const handleClick = () => {
         // 提取selectedperson的userId，组成新数组
@@ -57,6 +63,35 @@ export default function SelectPage() {
         }
     }
 
+    const handleRefuse = () => {
+        // 提取selectedperson的userId，组成新数组
+        let userList = selectedperson.map(person => person.userId);
+
+        if (isTask) {
+            if (userList) {
+                refuseSelectTask(id, userList).then(res => {
+                    setFlag(true);
+
+                    Modal.success({
+                        title: "拒绝成功",
+                        content: "拒绝成功",
+                    });
+                });
+            }
+        }else {
+            if (userList) {
+                refuseSelectService(id, userList).then(res => {
+                    setFlag(true);
+
+                    Modal.success({
+                        title: "拒绝成功",
+                        content: "拒绝成功",
+                    });
+                });
+            }
+        }
+    }
+
     const fetchdata = async (pageIndex, pageSize) => {
         if (isTask) {
             getTask(id).then(res => {
@@ -66,6 +101,12 @@ export default function SelectPage() {
                 setTotal(res.total);
                 setProposers(res.items);
             })
+            getTaskSuccessPeople(id, pageSize, pageIndex).then(res => {
+                setSucceedPeople(res.items);
+            });
+            getTaskRefusePeople(id, pageSize, pageIndex).then(res => {
+                setRefusePeople(res.items);
+            });
         } else if (isService) {
             getService(id).then(res => {
                 setTask(res);
@@ -73,6 +114,12 @@ export default function SelectPage() {
             getServiceSelectInfo(id, pageSize, pageIndex).then(res => {
                 setTotal(res.total);
                 setProposers(res.items);
+            });
+            getServiceSuccessPeople(id, pageSize, pageIndex).then(res => {
+                setSucceedPeople(res.items);
+            });
+            getServiceRefusePeople(id, pageSize, pageIndex).then(res => {
+                setRefusePeople(res.items);
             });
         }
     };
@@ -84,7 +131,7 @@ export default function SelectPage() {
     useEffect(() => {
         fetchdata(pageIndex, pageSize);
         // syncconsole();
-    }, [pageIndex, pageSize]);
+    }, [pageIndex, pageSize, flag]);
 
     const handleTableChange = (pagination) => {
         setPageIndex(pagination.current - 1);
@@ -121,6 +168,25 @@ export default function SelectPage() {
                     <h3>项目描述：</h3>
                     <p>{task.description}</p>
                     <h3>项目价格：￥{task.price / 100}</h3>
+
+                    { succeedPeople.length > 0 && <h3>已确认用户：</h3>}
+                    { succeedPeople.length > 0 && <Table
+                        columns={columns}
+                        dataSource={succeedPeople.map(person => ({
+                            ...person,
+                            key: person.userId,
+                        }))}
+                    />}
+
+                    { refusePeople.length > 0 && <h3>已拒绝用户：</h3>}
+                    { refusePeople.length > 0 && <Table
+                        columns={columns}
+                        dataSource={refusePeople.map(person => ({
+                            ...person,
+                            key: person.userId,
+                        }))}
+                    />}
+
                     <h3>请选择候选人：</h3>
                     <Table
                         columns={columns}
@@ -143,6 +209,9 @@ export default function SelectPage() {
                     <div style={{ marginTop: 16 }}>
                         <Button type="primary" onClick={handleClick}>
                             确认选择
+                        </Button>
+                        <Button type="danger" onClick={handleRefuse}>
+                            拒绝接取
                         </Button>
                     </div>
                 </div>

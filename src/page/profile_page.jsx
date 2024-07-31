@@ -82,7 +82,12 @@ export default function ProfilePage() {
         title: '已接受人数',
         dataIndex: 'accessedNumber',
         key: 'accepted',
-        render: (text, record) => <>{text} / {record.maxAccess}</>,
+        render: (text, record) => <>{record.accessingNumber + record.succeedNumber + record.failedNumber} / {record.maxAccess}</>,
+    },{
+        title: '待确认人数',
+        dataIndex: 'accessingNumber',
+        key: 'accepted',
+        render: (text, record) => <>{record.accessingNumber}</>,
     }, {
         title: '操作',
         key: 'action',
@@ -136,7 +141,12 @@ export default function ProfilePage() {
         title: '已接受人数',
         dataIndex: 'accessedNumber',
         key: 'accepted',
-        render: (text, record) => <>{text} / {record.maxAccess}</>,
+        render: (text, record) => <>{record.accessingNumber + record.succeedNumber + record.failedNumber} / {record.maxAccess}</>,
+    }, {
+        title: '待确认人数',
+        dataIndex: 'accessingNumber',
+        key: 'accepted',
+        render: (text, record) => <>{record.accessingNumber}</>,
     }, {
         title: '操作',
         key: 'action',
