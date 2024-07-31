@@ -45,8 +45,8 @@ export async function uncollectService(serviceId) {
   return res
 }
 
-export async function getServiceSelectInfo(taskId, pageSize, pageIndex) {
-  return await get(`${apiURL}/service/${taskId}/select/info?pageSize=${pageSize}&pageIndex=${pageIndex}`)
+export async function getServiceSelectInfo(serviceId, pageSize, pageIndex) {
+  return await get(`${apiURL}/service/${serviceId}/select/info?pageSize=${pageSize}&pageIndex=${pageIndex}`)
 }
 
 export async function cancelService(serviceId) {
@@ -54,5 +54,17 @@ export async function cancelService(serviceId) {
 }
 
 export async function confirmSelectService(serviceId, userList) {
-  return await put(`${apiURL}/service/${serviceId}/select`, {userList});
+  return await put(`${apiURL}/service/${serviceId}/select/confirm`, {userList});
+}
+
+export async function refuseSelectService(serviceId, userList) {
+  return await put(`${apiURL}/service/${serviceId}/select/deny`, {userList});
+}
+
+export async function getServiceSuccessPeople(serviceId, pageSize, pageIndex){
+  return await get(`${apiURL}/service/${serviceId}/select/success?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+}
+
+export async function getServiceRefusePeople(serviceId, pageSize, pageIndex){
+  return await get(`${apiURL}/service/${serviceId}/select/fail?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 }

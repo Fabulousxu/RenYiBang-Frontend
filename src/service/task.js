@@ -77,3 +77,15 @@ export async function cancelTask(taskId) {
 export async function confirmSelectTask(taskId, userList) {
   return await put(`${apiURL}/task/${taskId}/select/confirm`, {userList});
 }
+
+export async function refuseSelectTask(taskId, userList) {
+  return await put(`${apiURL}/task/${taskId}/select/deny`, {userList});
+}
+
+export async function getTaskSuccessPeople(taskId, pageSize, pageIndex){
+  return await get(`${apiURL}/task/${taskId}/select/success?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+}
+
+export async function getTaskRefusePeople(taskId, pageSize, pageIndex){
+  return await get(`${apiURL}/task/${taskId}/select/fail?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+}
