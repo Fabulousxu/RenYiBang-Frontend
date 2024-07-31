@@ -5,20 +5,32 @@ import ChatList from "../component/chat_list";
 import ChatWindow from "../component/chat_window";
 import Sider from "antd/es/layout/Sider";
 import {Content} from "antd/es/layout/layout";
-import {getChatList} from "../service/chat";
+import connectWebSocket, {getChatList} from "../service/chat";
 
 export default function MessagePage() {
-  const [self, setSelf] = useState({});
-  const [chatList, setChatList] = useState([]);
-  const [chat, setChat] = useState(null);
+  const [self, setSelf] = useState(null)
+  const [chatList, setChatList] = useState([])
+  const [chat, setChat] = useState(null)
+  const [socket, setSocket] = useState(null)
   const [messageApi, contextHolder] = message.useMessage()
 
   useEffect(() => {
-    getChatList().then((res) => {
+    getChatList().then(res => {
       setSelf(res.self)
       setChatList(res.chats)
-    }).catch(err => messageApi.open({type: 'error', content: err}))
-  }, []);
+      setChat(res.chats[0])
+    }).catch(error => messageApi.error(error))
+  }, [])
+
+  useEffect(() => {
+    if (self) {
+      let ws = connectWebSocket(self.userId)
+      setSocket(ws)
+      return () => {
+        if (ws) ws.close()
+      }
+    }
+  }, [self])
 
   return (<BasicLayout page='message'>
     <Layout style={{background: '#fff'}}>
@@ -32,9 +44,10 @@ export default function MessagePage() {
       </Sider>
       <Content
         style={{paddingLeft: '24px', display: 'flex', flexDirection: 'column'}}>
-        {chat ? <ChatWindow chat={chat}/> : <div style={{textAlign: 'center', marginTop: '20%'}}>
-          <h2 style={{color: 'gray'}}>选择一个聊天</h2>
-        </div>}
+        {chat ? <ChatWindow chat={chat} self={self} socket={socket}/> :
+          <div style={{textAlign: 'center', marginTop: '20%'}}>
+            <h2 style={{color: 'gray'}}>暂无聊天</h2>
+          </div>}
       </Content>
     </Layout>
   </BasicLayout>);

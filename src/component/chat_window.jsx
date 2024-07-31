@@ -1,89 +1,72 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Card, List, Input, Button, Avatar, Row, Col, Divider} from 'antd';
-import connectWebSocket from '../service/chat';
 import TextArea from "antd/es/input/TextArea";
+import {getChatHistory} from "../service/chat";
 
 export default function ChatWindow(props) {
-  const {chat} = props
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [socket, setSocket] = useState(null);
-
-  const messagesEndRef = useRef(null);
-
-  useEffect(() => {
-    const ws = connectWebSocket({
-      userId: chat.senderId,
-      onopen: () => console.log('WebSocket connection opened' + chat.senderId),
-      onmessage: (data) => handleIncomingMessage(data),
-      onclose: () => console.log('WebSocket connection closed' + chat.senderId),
-    });
-
-    setSocket(ws);
-
-    return () => {
-      if (ws) {
-        ws.send(JSON.stringify({type: 'unregister', userId: chat.senderId}));
-        ws.close();
-      }
-    };
-  }, [chat.senderId]);
-
-  const handleIncomingMessage = (data) => {
-    try {
-      const message = JSON.parse(data);
-      if (message.taskChatId === chat.taskChatId) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
-    } catch (error) {
-      console.error('Error parsing message:', error);
-    }
-  };
-
-  const handleSend = () => {
-    if (message && socket) {
-      const newMessage = {
-        type: 'task',
-        chatId: chat.taskChatId,
-        senderId: chat.senderId,
-        receiverId: chat.receiverId,
-        content: message,
-      };
-      socket.send(JSON.stringify(newMessage));
-      setMessage('');
-    }
-  };
+  const selfId = props.self?.userId
+  const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState([])
+  const messagesEndRef = useRef(null)
+  const getHistory = () => {
+    getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
+      .then(res => {
+        setMessages(messages => setMessages([...res.reverse(), ...messages]))
+      }).catch(error => console.error(error))
+  }
+  const onsend = () => {
+  }
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-  }, [messages]);
+    getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
+      .then(res => {
+        
+        setMessages(res.reverse())
+        messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
+      }).catch(error => console.error(error))
+  }, [props.chat])
+
+  useEffect(() => {
+    if (props.socket) {
+      props.socket.onmessage = data => {
+        setMessages(messages => [...messages, data])
+      }
+    }
+  }, [props.socket]);
 
   return (<Card
     title={props.chat?.chatter.nickname}
-    style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-    <div style={{flex: 1, overflowY: 'auto', padding: '10px', height: '40vh'}}>
+    style={{
+      display: 'flex', flexDirection: 'column', width: '100%', height: 'calc(100vh - 10rem - 72px)'
+    }}>
+    <div style={{
+      flex: 1,
+      overflowY: 'auto',
+      height: 'calc(100vh - 10rem - 271px)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }}>
+      <a style={{fontSize: '0.8rem'}}>获取更多聊天记录</a>
       <List
         dataSource={messages}
-        renderItem={(item) => (<div style={{
+        style={{width: '100%'}}
+        renderItem={item => <div style={{
           display: 'flex',
-          marginBottom: '10px',
-          justifyContent: item.senderId === chat.senderId ? 'flex-end' : 'flex-start'
+          margin: '10px',
+          justifyContent: item.senderId === selfId ? 'flex-end' : 'flex-start'
         }}>
-          {item.senderId !== chat.senderId &&
-            <Avatar src={item.avatar} style={{marginRight: '10px'}}/>}
+          {item.senderId !== selfId && <Avatar src={item.avatar} style={{marginRight: '10px'}}/>}
           <div style={{
-            maxWidth: '60%',
-            backgroundColor: item.senderId === chat.senderId ? '#1677FF' : '#f1f0f0',
-            color: item.senderId === chat.senderId ? '#fff' : '#000',
+            maxWidth: '70%',
+            backgroundColor: item.senderId === selfId ? '#1677FF' : '#f1f0f0',
+            color: item.senderId === selfId ? '#fff' : '#000',
             padding: '10px',
             borderRadius: '15px',
             wordWrap: 'break-word'
-          }}>
-            {item.content}
-          </div>
-          {item.senderId === chat.senderId &&
-            <Avatar src={item.avatar} style={{marginLeft: '10px'}}/>}
-        </div>)}
+          }}>{item.content}</div>
+          {item.senderId === selfId && <Avatar src={item.avatar} style={{marginLeft: '10px'}}/>}
+        </div>}
       />
       <div ref={messagesEndRef}/>
     </div>
@@ -94,12 +77,12 @@ export default function ChatWindow(props) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="输入消息"
-          onPressEnter={handleSend}
+          onPressEnter={onsend}
           style={{height: '3rem'}}
         />
       </Col>
       <Col style={{marginLeft: '15px'}}>
-        <Button type="primary" onClick={handleSend}>发送</Button>
+        <Button type="primary" onClick={onsend}>发送</Button>
       </Col>
     </Row>
   </Card>);
