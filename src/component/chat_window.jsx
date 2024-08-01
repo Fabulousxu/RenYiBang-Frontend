@@ -12,6 +12,7 @@ export default function ChatWindow(props) {
   const [messages, setMessages] = useState([])
   const messagesEndRef = useRef(null)
   const [scroll, setScroll] = useState(true)
+
   const getHistory = () => {
     if (!hasHistory) return
     getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', getHistoryCount)
@@ -20,6 +21,7 @@ export default function ChatWindow(props) {
         setMessages(messages => [...res.reverse(), ...messages])
       }).catch(error => console.error(error))
   }
+
   const onsend = () => {
     if (message) {
       props.socket.send({chatId: props.chat?.chatId, content: message})
@@ -46,8 +48,11 @@ export default function ChatWindow(props) {
   }, [messages])
 
   useEffect(() => {
-    if (props.socket) props.socket.onmessage = data => setMessages(messages => [...messages, data])
-  }, [props.socket]);
+    if (props.socket) props.socket.onmessage = data => {
+      if (data.chatId === props.chat?.chatId) setMessages(messages => [...messages, data])
+      props.onmessage(data)
+    }
+  }, [props.socket, props.chat]);
 
   return (<Card
     title={props.chat?.chatter.nickname}

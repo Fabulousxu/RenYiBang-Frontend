@@ -26,10 +26,12 @@ export default function ChatList(props) {
             justifyContent: 'center',
             alignItems: 'center',
             color: 'white',
-            backgroundColor: 'red',
-            width: '20px',
-            height: '20px',
+            backgroundColor: '#ff2b2b',
+            margin: 'auto 0',
+            width: '16px',
+            height: '16px',
             borderRadius: '100%',
+            fontSize: '0.65rem',
             visibility: item?.unreadCount > 0 ? 'visible' : 'hidden'
           }}>{item?.unreadCount > 99 ? 99 : item?.unreadCount}</div>
         </Col>
