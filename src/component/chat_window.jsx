@@ -3,47 +3,50 @@ import {Card, List, Input, Button, Avatar, Row, Col, Divider} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import {getChatHistory} from "../service/chat";
 
+const getHistoryCount = 10
+
 export default function ChatWindow(props) {
   const selfId = props.self?.userId
   const [hasHistory, setHasHistory] = useState(true)
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const messagesEndRef = useRef(null)
+  const [scroll, setScroll] = useState(true)
   const getHistory = () => {
     if (!hasHistory) return
-    getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
+    getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', getHistoryCount)
       .then(res => {
-        if (res.length === 0) {
-          setHasHistory(false)
-          return
-        }
+        if (res.length < getHistoryCount) setHasHistory(false)
         setMessages(messages => [...res.reverse(), ...messages])
       }).catch(error => console.error(error))
   }
   const onsend = () => {
     if (message) {
-      props.socket.send({
-        type: '', chatId: props.chat?.chatId, content: message
-      })
+      props.socket.send({chatId: props.chat?.chatId, content: message})
       setMessage('')
+      setScroll(true)
     }
   }
 
   useEffect(() => {
-    getChatHistory(props.chat?.chatId, messages.length > 0 ? messages[0].messageId : '', 10)
+    setHasHistory(true)
+    getChatHistory(props.chat?.chatId, '', getHistoryCount)
       .then(res => {
         setMessages(res.reverse())
-        messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
-        setHasHistory(true)
+        if (res.length < getHistoryCount) setHasHistory(false)
+        setScroll(true)
       }).catch(error => console.error(error))
   }, [props.chat])
 
   useEffect(() => {
-    if (props.socket) {
-      props.socket.onmessage = data => {
-        setMessages(messages => [...messages, data])
-      }
+    if (scroll) {
+      messagesEndRef.current.scrollIntoView({behavior: 'smooth'})
+      setScroll(false)
     }
+  }, [messages])
+
+  useEffect(() => {
+    if (props.socket) props.socket.onmessage = data => setMessages(messages => [...messages, data])
   }, [props.socket]);
 
   return (<Card
@@ -71,16 +74,29 @@ export default function ChatWindow(props) {
           margin: '10px',
           justifyContent: item.senderId === selfId ? 'flex-end' : 'flex-start'
         }}>
-          {item.senderId !== selfId && <Avatar src={item.avatar} style={{marginRight: '10px'}}/>}
-          <div style={{
-            maxWidth: '70%',
-            backgroundColor: item.senderId === selfId ? '#1677FF' : '#f1f0f0',
-            color: item.senderId === selfId ? '#fff' : '#000',
-            padding: '10px',
-            borderRadius: '15px',
-            wordWrap: 'break-word'
-          }}>{item.content}</div>
-          {item.senderId === selfId && <Avatar src={item.avatar} style={{marginLeft: '10px'}}/>}
+          {item.senderId !== selfId &&
+            <Avatar src={item.avatar} style={{margin: '0.8rem 10px 0 0'}}/>}
+          <div style={{display: 'flex', flexDirection: 'column', maxWidth: '70%'}}>
+            <div style={{
+              color: 'gray',
+              fontSize: '0.8rem',
+              marginLeft: item.senderId === selfId ? 'auto' : 0,
+              marginRight: item.senderId !== selfId ? 'auto' : 0
+            }}>{item.createdAt}</div>
+            <div style={{
+              maxWidth: '100%',
+              marginLeft: item.senderId === selfId ? 'auto' : 0,
+              marginRight: item.senderId !== selfId ? 'auto' : 0,
+              backgroundColor: item.senderId === selfId ? '#1677FF' : '#f1f0f0',
+              color: item.senderId === selfId ? '#fff' : '#000',
+              padding: '10px',
+              borderRadius: '15px',
+              wordWrap: 'break-word',
+              whiteSpace: 'pre-wrap'
+            }}>{item.content}</div>
+          </div>
+          {item.senderId === selfId &&
+            <Avatar src={item.avatar} style={{margin: '0.8rem 0 0 10px'}}/>}
         </div>}
       />
       <div ref={messagesEndRef}/>
