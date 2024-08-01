@@ -5,7 +5,10 @@ export default function ChatList(props) {
   return (<List
     itemLayout="horizontal"
     dataSource={props.list}
-    renderItem={(item, index) => <List.Item onClick={() => props.onChat(item)}>
+    renderItem={(item, index) => <List.Item onClick={() => {
+      item.unreadCount = 0
+      props.onChat(item)
+    }}>
       <Row style={{width: '100%'}}>
         <Col style={{flexGrow: 1}}>
           <List.Item.Meta
@@ -17,7 +20,7 @@ export default function ChatList(props) {
           />
         </Col>
         <Col style={{display: 'flex', flexDirection: 'column', alignItems: 'end'}}>
-          <div style={{color: 'gray'}}>{item?.lastMessageCreatedAt}</div>
+          <div style={{color: 'gray', fontSize: '0.8rem'}}>{item?.lastMessageCreatedAt}</div>
           <div style={{
             display: 'flex',
             justifyContent: 'center',

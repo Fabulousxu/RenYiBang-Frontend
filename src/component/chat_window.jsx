@@ -96,7 +96,7 @@ export default function ChatWindow(props) {
             }}>{item.content}</div>
           </div>
           {item.senderId === selfId &&
-            <Avatar src={item.avatar} style={{margin: '0.8rem 0 0 10px'}}/>}
+            <Avatar src={props?.self.avatar} style={{margin: '0.8rem 0 0 10px'}}/>}
         </div>}
       />
       <div ref={messagesEndRef}/>
