@@ -1,4 +1,4 @@
-import {apiURL, get} from "./util";
+import {apiURL, get, post} from "./util";
 
 export default function connectWebSocket(userId) {
   const socket = new WebSocket('ws://localhost:8085/chat')
@@ -29,3 +29,6 @@ export async function getChatHistory(chatId, lastMessageId, count) {
   return await get(`${apiURL}/chat/history?chatId=${chatId}&lastMessageId=${lastMessageId}&count=${count}`)
 }
 
+export async function enterChat(type, ofId) {
+  return await post(`${apiURL}/chat/enter/${type}/${ofId}`)
+}

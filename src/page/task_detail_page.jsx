@@ -18,7 +18,8 @@ import {
 } from "../service/task";
 import {MessageOutlined, PayCircleOutlined, StarOutlined} from "@ant-design/icons";
 import {Button, FloatButton, message, Space} from "antd";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {enterChat} from "../service/chat";
 
 export default function TaskDetailPage(props) {
   const {id} = useParams();
@@ -28,33 +29,33 @@ export default function TaskDetailPage(props) {
   const [messageTotal, setMessageTotal] = useState(0);
   const [commentList, setCommentList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [messageApi, contextHolder] = message.useMessage()
+  const navigate = useNavigate()
 
   const getCommentWhenCommentMode = useCallback(() => {
     getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
       setCommentTotal(res.total);
       setCommentList(res.items);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
     getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
       setMessageTotal(res.total);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
   }, [id]);
 
   const getCommentWhenMessageMode = () => {
     getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
       setMessageTotal(res.total);
       setCommentList(res.items);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
     getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
       setCommentTotal(res.total);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
   };
 
   useEffect(() => {
     getTask(id).then(res => {
       console.log(res);
       setDetail(res);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
     getCommentWhenCommentMode();
   }, [id, getCommentWhenCommentMode]);
 
@@ -63,22 +64,19 @@ export default function TaskDetailPage(props) {
       uncollectTask(id).then(res => {
         setDetail({...detail, collected: false});
         message.success('取消收藏成功');
-      }).catch(err => {
-        message.error(err);
-      });
+      }).catch(err => message.error(err))
     } else {
       collectTask(id).then(res => {
         setDetail({...detail, collected: true});
         message.success('收藏任务成功');
-      }).catch(err => {
-        message.error(err);
-      });
+      }).catch(err => message.error(err))
     }
   }
 
   function handleChat() {
-    // 将任务发起者添加为聊天对象，跳转到聊天页面
-
+    enterChat('task', id).then(res => {
+      navigate(`/message`)
+    }).catch(err => message.error(err))
   }
 
   function handleAccept() {
@@ -87,17 +85,12 @@ export default function TaskDetailPage(props) {
       unaccessTask(id).then(res => {
         setDetail({...detail, accessed: false});
         message.success('取消接取成功');
-      }).catch(err => {
-        message.error(err);
-      });
+      }).catch(err => message.error(err))
     } else {
       accessTask(id).then(res => {
         setDetail({...detail, accessed: true});
         message.success('接取任务成功');
-      }).catch(err => {
-        // Message
-        message.error(err);
-      });
+      }).catch(err => message.error(err))
     }
   }
 
@@ -124,8 +117,8 @@ export default function TaskDetailPage(props) {
       currentPage={currentPage}
       onMessage={message => {
         putMessage(id, message).then(res => {
-          messageApi.open({type: 'success', content: '留言成功'})
-        }).catch(err => messageApi.open({type: 'error', content: err}))
+          message.success('留言成功')
+        }).catch(err => message.error(err))
       }}
       onChangeMode={key => {
         setMode(key);
@@ -138,7 +131,7 @@ export default function TaskDetailPage(props) {
             setCommentTotal(res.total);
             setCommentList(res.items);
             setCurrentPage(page);
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+          }).catch(err => message.error(err))
       }}
       onChangeOrder={order => {
         (mode === 'comment' ? getTaskComment : getTaskMessage)(id, totalCommentEntry, 0, order)
@@ -146,7 +139,7 @@ export default function TaskDetailPage(props) {
             setCommentTotal(res.total);
             setCommentList(res.items);
             setCurrentPage(1);
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+          }).catch(err => message.error(err))
       }}
       onLike={index => {
         if (commentList[index].liked) {
@@ -154,15 +147,15 @@ export default function TaskDetailPage(props) {
             commentList[index].liked = false
             commentList[index].likedNumber--
             setCommentList([...commentList])
-            messageApi.open({type: 'success', content: '取消点赞成功'})
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+            message.success('取消点赞成功')
+          }).catch(err => message.error(err))
         } else {
           (mode === 'comment' ? likeComment : likeMessage)(mode === 'comment' ? commentList[index].taskCommentId : commentList[index].taskMessageId).then(res => {
             commentList[index].liked = true
             commentList[index].likedNumber++
             setCommentList([...commentList])
-            messageApi.open({type: 'success', content: '点赞成功'})
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+            message.success('点赞成功')
+          }).catch(err => message.error(err))
         }
       }}
     />
