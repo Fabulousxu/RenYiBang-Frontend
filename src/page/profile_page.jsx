@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import BasicLayout from "../component/basic_layout";
-import {Descriptions, Avatar, Typography, Button, Table, Tabs, Modal} from 'antd';
+import {Descriptions, Avatar, Typography, Button, Table, Tabs, Modal, Form, Input, Upload} from 'antd';
 import { getSelfProfile } from '../service/user';
 import {Link, Navigate, useParams} from "react-router-dom";
 import {cancelTask, unaccessTask} from '../service/task';
@@ -11,7 +11,8 @@ import {
     fetchInitiatorServices,
     fetchInitiatorTasks,
     fetchRecipientServices,
-    fetchRecipientTasks
+    fetchRecipientTasks,
+  updateUserProfile
 } from "../service/user";
 
 const { Title } = Typography;
@@ -24,10 +25,21 @@ export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState('1');
     const [data, setData] = useState([]);
     const [pageIndex, setPageIndex] = useState(0);
+    const [editMode, setEditMode] = useState(false);
+    const [editUser, setEditUser] = useState({});
+    const [avatar, setAvatar] = useState(null);
 
     useEffect(() => {
         getSelfProfile().then(res => {
             setUser(res);
+            let _editUser = {
+                nickname: res.nickname,
+                intro: res.intro,
+                phone: res.phone,
+                email: res.email,
+            };
+            setEditUser(_editUser);
+            setAvatar(res.avatar);
         }).catch(err => {
             console.error(err);
         });
@@ -189,22 +201,116 @@ export default function ProfilePage() {
         ),
     }];
 
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    const handleUpdate = () => {
+        let data = {
+            nickname: editUser.nickname,
+            avatar: avatar,
+            intro: editUser.intro,
+            phone: editUser.phone,
+            email: editUser.email,
+        };
+
+        updateUserProfile(data).then(res => {
+            Modal.success({
+                title: '修改成功',
+                content: '修改成功',
+            });
+            setEditMode(false);
+            setUser({...user, ...editUser, avatar: avatar});
+        }).catch(err => {
+            Modal.error({
+                title: '修改失败',
+                content: err,
+            });
+        });
+    };
+
     return (
         <BasicLayout page='profile'>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24 }}>
-                <Avatar size={64} src={user.avatar} />
+                {
+                    editMode ?
+                      <Upload
+                        name="avatar"
+                        listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                        beforeUpload={file => {
+                            getBase64(file).then(base64 => {
+                                setAvatar(base64)
+                            });
+                            return false; // 阻止自动上传
+                        }}
+                      >
+                          {avatar ? <img src={avatar} alt="avatar" style={{ width: '100%' }} /> : <div>上传头像</div>}
+                      </Upload>
+                      :
+                      <Avatar size={64} src={user.avatar} />
+                }
+
                 <div style={{ marginLeft: 24 }}>
-                    <Title level={2}>{user.nickname}</Title>
-                    <Title level={4} type="secondary">{user.intro}</Title>
+                    {
+                        editMode ?
+                          <>
+                              <Title level={4}> 昵称 </Title>
+                              <Input defaultValue={user.nickname} style={{ width: 1000 }} onChange={e => setEditUser({...editUser, nickname: e.target.value})} />
+                          </>
+                          :
+                          <Title level={2}>{user.nickname}</Title>
+                    }
+
+                    {
+                        editMode ?
+                          <>
+                              <Title level={4}> 个人简介 </Title>
+                              <Input defaultValue={user.intro} style={{ width: 1000 }} onChange={e => setEditUser({...editUser, intro: e.target.value})} />
+
+                          </>
+
+                          :
+                          <Title level={4} type="secondary">{user.intro}</Title>
+                    }
+
                 </div>
+
+                <div style={{ marginLeft: 24 }}></div>
+                <Button type="primary" onClick={() => setEditMode(!editMode)}>{editMode ? '取消' : '修改'}</Button>
             </div>
 
-            <Descriptions title="用户信息" bordered column={4}>
-                <Descriptions.Item label="用户名">{user.nickname}</Descriptions.Item>
-                <Descriptions.Item label="用户类型">{user.type}</Descriptions.Item>
-                <Descriptions.Item label="评分">{(user.rating / 10).toFixed(1)}</Descriptions.Item>
-                <Descriptions.Item label="余额">{(user.balance / 100).toFixed(2)}元</Descriptions.Item>
-            </Descriptions>
+            {editMode ? (
+              <Form onFinish={handleUpdate}>
+                  {/* 输入 */}
+                  <Form.Item label="电话号码" name="phone">
+                      <Input defaultValue={user.phone} onChange={e => setEditUser({...editUser, phone: e.target.value})} />
+                  </Form.Item>
+                  <Form.Item label="邮箱" name="email">
+                      <Input defaultValue={user.email} onChange={e => setEditUser({...editUser, email: e.target.value})} />
+                  </Form.Item>
+
+                  <Button type="primary" htmlType="submit">
+                      提交
+                  </Button>
+              </Form>
+            ) : (
+              <Descriptions title="用户信息" bordered column={4}>
+                  {/*<Descriptions.Item label="用户名">{user.nickname}</Descriptions.Item>*/}
+                  {/*<Descriptions.Item label="用户类型">{user.type}</Descriptions.Item>*/}
+                  <Descriptions.Item label="评分">{(user.rating / 10).toFixed(1)}</Descriptions.Item>
+                  <Descriptions.Item label="余额">{(user.balance / 100).toFixed(2)}元</Descriptions.Item>
+                  <Descriptions.Item label="电话号码">{user.phone}</Descriptions.Item>
+                  <Descriptions.Item label="邮箱">{user.email}</Descriptions.Item>
+              </Descriptions>
+            )}
+
 
             {/*一段占位的空白*/}
             <p style={{ margin: '30px 0', fontSize: '20px' }}>

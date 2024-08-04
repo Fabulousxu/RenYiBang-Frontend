@@ -11,6 +11,7 @@ import {
   likeComment,
   likeMessage,
   putMessage,
+  putComment,
   unaccessTask,
   uncollectTask,
   unlikeComment,
@@ -122,10 +123,16 @@ export default function TaskDetailPage(props) {
       list={commentList}
       total={mode === 'comment' ? commentTotal : messageTotal}
       currentPage={currentPage}
-      onMessage={message => {
-        putMessage(id, message).then(res => {
-          messageApi.open({type: 'success', content: '留言成功'})
-        }).catch(err => messageApi.open({type: 'error', content: err}))
+      onMessage={msg => {
+        console.log(msg)
+        putMessage(id, msg).then(res => {
+          message.success('留言成功');
+        }).catch(err => message.error(err))
+      }}
+      onComment={(msg, rating) => {
+        putComment(id, msg, rating).then(res => {
+          message.success('评论成功');
+        }).catch(err => message.error(err))
       }}
       onChangeMode={key => {
         setMode(key);

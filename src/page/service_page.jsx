@@ -1,12 +1,11 @@
 import ItemList from "../component/item_list";
 import BasicLayout from "../component/basic_layout";
+import {collectService, searchService, uncollectService} from "../service/service";
 import {useEffect, useState} from "react";
 import {totalEntry} from "../component/item_list";
 import {message} from "antd";
-import {collectService, searchService, uncollectService} from "../service/service";
-import {collectTask, uncollectTask} from "../service/task";
 
-export default function TaskPage() {
+export default function ServicePage() {
   const [total, setTotal] = useState(0)
   const [serviceList, setServiceList] = useState([])
   const [currentPage, setCurrentPage] = useState(1)

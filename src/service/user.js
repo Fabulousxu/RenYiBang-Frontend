@@ -15,6 +15,13 @@ export const getSelfProfile = async () => {
     return res;
 };
 
+export const updateUserProfile = async (data) => {
+    console.log(data);
+    let res = await post(`${apiURL}/user/self/update`, data);
+    return res;
+
+}
+
 export async function fetchInitiatorTasks(pageSize, pageIndex) {
     const url = `${apiURL}/task/initiator/self?pageSize=${pageSize}&pageIndex=${pageIndex}`;
     return get(url);

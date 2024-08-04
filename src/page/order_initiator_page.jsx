@@ -16,20 +16,6 @@ const statusMap = {
   4: { text: '已取消', color: 'red' },
 };
 
-const getStatusStep = (status) => {
-  switch (status) {
-    case 1:
-      return 1;
-    case 3:
-      return 2;
-    case 2:
-    case 4:
-      return 3;
-    default:
-      return 0;
-  }
-};
-
 export default function OrderInitiatorPage() {
   const { id } = useParams();
   const location = useLocation();

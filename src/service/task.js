@@ -50,6 +50,11 @@ export async function putMessage(taskId, content) {
   return await put(`${apiURL}/task/${taskId}/message`, {content})
 }
 
+export async function putComment(taskId, content, rating) {
+  return await put(`${apiURL}/task/${taskId}/comment`, {content, rating})
+
+}
+
 export async function accessTask(taskId) {
   let res = await put(`${apiURL}/task/${taskId}/access`)
   return res
