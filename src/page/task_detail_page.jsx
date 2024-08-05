@@ -144,21 +144,25 @@ export default function TaskDetailPage(props) {
         console.log(msg)
         putMessage(id, msg).then(res => {
           message.success('留言成功');
-          // 刷新留言列表
-          getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
-            setMessageTotal(res.total);
-            setCommentList(res.items);
-          }).catch(err => message.error(err))
+
+          // 会出好多bug，暂时先注释掉
+          // setMode('message');
+          // getTaskMessage(id, totalCommentEntry, 0, 'time').then(res => {
+          //   setMessageTotal(res.total);
+          //   setCommentList(res.items);
+          // }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onComment={(msg, rating) => {
         putComment(id, msg, rating).then(res => {
           message.success('评论成功');
-          // 刷新评论列表
-          getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
-            setCommentTotal(res.total);
-            setCommentList(res.items);
-          }).catch(err => message.error(err))
+
+          // 会出好多bug，暂时先注释掉
+          // setMode('comment')
+          // getTaskComment(id, totalCommentEntry, 0, 'time').then(res => {
+          //   setCommentTotal(res.total);
+          //   setCommentList(res.items);
+          // }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onChangeMode={key => {
@@ -201,8 +205,8 @@ export default function TaskDetailPage(props) {
       }}
 
       onDelete={index => {
-        mode === 'comment' ? handleDeleteComment(commentList[index].taskCommentId) : handleDeleteMessage(commentList[index].taskMessageId)}
-      }
+        mode === 'comment' ? handleDeleteComment(commentList[index].taskCommentId) : handleDeleteMessage(commentList[index].taskMessageId)
+      }}
     />
   </BasicLayout>);
 }

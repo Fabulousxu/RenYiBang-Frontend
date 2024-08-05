@@ -1,7 +1,7 @@
 import {apiURL, get, post} from "./util";
 
 export default function connectWebSocket(userId) {
-  const socket = new WebSocket('ws://localhost:8085/chat')
+  const socket = new WebSocket('ws://localhost:8095/chat')
   socket.onopen = () => {
     socket.send(JSON.stringify({type: 'register', userId: userId}))
     console.log(`WebSocket connection opened, userId: ${userId}`)

@@ -151,21 +151,25 @@ export default function ServiceDetailPage(props) {
         console.log(msg)
         putMessage(id, msg).then(res => {
           message.success('留言成功');
-          // 刷新留言列表
-          getServiceMessage(id, totalCommentEntry, 0, 'likes').then(res => {
-            setMessageTotal(res.total);
-            setCommentList(res.items);
-          }).catch(err => message.error(err))
+
+          // 会出好多bug，先注释掉
+          // setMode('message');
+          // getServiceMessage(id, totalCommentEntry, 0, 'likes').then(res => {
+          //   setMessageTotal(res.total);
+          //   setCommentList(res.items);
+          // }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onComment={(msg, rating) => {
         putComment(id, msg, rating).then(res => {
           message.success('评论成功');
-          // 刷新评论列表
-          getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
-            setCommentTotal(res.total);
-            setCommentList(res.items);
-          }).catch(err => message.error(err))
+          
+          // 会出好多bug，先注释掉
+          // setMode('comment')
+          // getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
+          //   setCommentTotal(res.total);
+          //   setCommentList(res.items);
+          // }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onChangeMode={key => {
@@ -208,7 +212,8 @@ export default function ServiceDetailPage(props) {
       }}
 
       onDelete={index => {
-        mode === 'comment' ? handleDeleteComment(commentList[index].serviceCommentId) : handleDeleteMessage(commentList[index].serviceMessageId)}
+        mode === 'comment' ? handleDeleteComment(commentList[index].serviceCommentId) : handleDeleteMessage(commentList[index].serviceMessageId)
+      }
       }
     />
   </BasicLayout>);
