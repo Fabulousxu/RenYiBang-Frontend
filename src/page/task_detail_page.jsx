@@ -15,7 +15,9 @@ import {
   unaccessTask,
   uncollectTask,
   unlikeComment,
-  unlikeMessage
+  unlikeMessage,
+  deleteMessage,
+  deleteComment,
 } from "../service/task";
 import {MessageOutlined, PayCircleOutlined, StarOutlined} from "@ant-design/icons";
 import {Button, FloatButton, message, Space} from "antd";
@@ -102,6 +104,28 @@ export default function TaskDetailPage(props) {
     }
   }
 
+  function handleDeleteComment(taskCommentId) {
+    deleteComment(taskCommentId).then(res => {
+      message.success('删除评论成功');
+      // 刷新评论列表
+      getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
+        setCommentTotal(res.total);
+        setCommentList(res.items);
+      }).catch(err => message.error(err))
+    }).catch(err => message.error(err))
+  }
+
+  function handleDeleteMessage(taskMessageId) {
+    deleteMessage(taskMessageId).then(res => {
+      message.success('删除留言成功');
+      // 刷新留言列表
+      getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
+        setMessageTotal(res.total);
+        setCommentList(res.items);
+      }).catch(err => message.error(err))
+    }).catch(err => message.error(err))
+  }
+
   return (<BasicLayout page="task-detail">
     <ItemDetail detail={detail} descriptionTitle="任务描述" ratingTitle='任务评分:'/>
     <Space style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
@@ -127,11 +151,21 @@ export default function TaskDetailPage(props) {
         console.log(msg)
         putMessage(id, msg).then(res => {
           message.success('留言成功');
+          // 刷新留言列表
+          getTaskMessage(id, totalCommentEntry, 0, 'likes').then(res => {
+            setMessageTotal(res.total);
+            setCommentList(res.items);
+          }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onComment={(msg, rating) => {
         putComment(id, msg, rating).then(res => {
           message.success('评论成功');
+          // 刷新评论列表
+          getTaskComment(id, totalCommentEntry, 0, 'likes').then(res => {
+            setCommentTotal(res.total);
+            setCommentList(res.items);
+          }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onChangeMode={key => {
@@ -172,6 +206,10 @@ export default function TaskDetailPage(props) {
           }).catch(err => messageApi.open({type: 'error', content: err}))
         }
       }}
+
+      onDelete={index => {
+        mode === 'comment' ? handleDeleteComment(commentList[index].taskCommentId) : handleDeleteMessage(commentList[index].taskMessageId)}
+      }
     />
   </BasicLayout>);
 }

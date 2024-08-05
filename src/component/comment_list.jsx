@@ -1,7 +1,7 @@
 import {Avatar, Button, Col, List, Pagination, Radio, Rate, Row, Tabs} from "antd";
 import Item from "antd/es/list/Item";
 import {Link} from "react-router-dom";
-import {LikeFilled, LikeOutlined} from "@ant-design/icons";
+import {DeleteOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
 import TextArea from "antd/es/input/TextArea";
 
@@ -47,6 +47,26 @@ export default function CommentList(props) {
           />
         </Col>
         <Col>{item.likedNumber}</Col>
+
+        {item.commenter && item.commenter.userId === Number(localStorage.getItem('userId')) &&
+        <Col style={{padding: '0 0 0 15px'}}>
+          <Button
+            icon={<DeleteOutlined/>}
+            style={{border: 'none', borderRadius: '100%'}}
+            size='small'
+            onClick={() => props.onDelete(index)}
+          />
+        </Col>}
+
+        {item.messager && item.messager.userId === Number(localStorage.getItem('userId')) &&
+          <Col style={{padding: '0 0 0 15px'}}>
+            <Button
+              icon={<DeleteOutlined/>}
+              style={{border: 'none', borderRadius: '100%'}}
+              size='small'
+              onClick={() => props.onDelete(index)}
+            />
+          </Col>}
       </Row>
     </Item>)}
   />)

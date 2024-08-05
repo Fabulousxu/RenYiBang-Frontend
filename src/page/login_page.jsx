@@ -23,6 +23,7 @@ function LoginPage() {
       const token = data.jwt;
       localStorage.setItem('jwt', token);
       localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userId', userId);
 
       navigate('/task');
     } catch (error) {

@@ -94,3 +94,13 @@ export async function getTaskSuccessPeople(taskId, pageSize, pageIndex){
 export async function getTaskRefusePeople(taskId, pageSize, pageIndex){
   return await get(`${apiURL}/task/${taskId}/select/fail?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 }
+
+//
+
+export async function deleteComment(commentId) {
+  return await del(`${apiURL}/task/comment/${commentId}`)
+}
+
+export async function deleteMessage(messageId) {
+  return await del(`${apiURL}/task/message/${messageId}`)
+}

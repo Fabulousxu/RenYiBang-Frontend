@@ -94,3 +94,14 @@ export async function getServiceSuccessPeople(serviceId, pageSize, pageIndex){
 export async function getServiceRefusePeople(serviceId, pageSize, pageIndex){
   return await get(`${apiURL}/service/${serviceId}/select/fail?pageSize=${pageSize}&pageIndex=${pageIndex}`);
 }
+
+
+//
+
+export async function deleteComment(commentId) {
+  return await del(`${apiURL}/service/comment/${commentId}`)
+}
+
+export async function deleteMessage(messageId) {
+  return await del(`${apiURL}/service/message/${messageId}`)
+}

@@ -219,6 +219,23 @@ export default function ProfilePage() {
             email: editUser.email,
         };
 
+        // 判断电话和邮箱是否合法
+        if (!data.phone.match(/^1[3456789]\d{9}$/)) {
+            Modal.error({
+                title: '修改失败',
+                content: '电话号码格式不正确',
+            });
+            return;
+        }
+
+        if (!data.email.match(/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/)) {
+            Modal.error({
+                title: '修改失败',
+                content: '邮箱格式不正确',
+            });
+            return;
+        }
+
         updateUserProfile(data).then(res => {
             Modal.success({
                 title: '修改成功',

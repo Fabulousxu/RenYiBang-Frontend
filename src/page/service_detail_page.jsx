@@ -15,7 +15,9 @@ import {
   unaccessService,
   uncollectService,
   unlikeComment,
-  unlikeMessage
+  unlikeMessage,
+  deleteMessage,
+  deleteComment,
 } from "../service/service";
 import {MessageOutlined, PayCircleOutlined, StarOutlined} from "@ant-design/icons";
 import {Button, FloatButton, message, Space} from "antd";
@@ -70,7 +72,7 @@ export default function ServiceDetailPage(props) {
     } else {
       collectService(id).then(res => {
         setDetail({...detail, collected: true});
-        message.success('收藏服务成功');
+        message.success('收藏任务成功');
       }).catch(err => {
         message.error(err);
       });
@@ -78,12 +80,12 @@ export default function ServiceDetailPage(props) {
   }
 
   function handleChat() {
-    // 将服务发起者添加为聊天对象，跳转到聊天页面
+    // 将任务发起者添加为聊天对象，跳转到聊天页面
 
   }
 
   function handleAccept() {
-    // 接取/取消接取服务
+    // 接取/取消接取任务
     if (detail.accessed) {
       unaccessService(id).then(res => {
         setDetail({...detail, accessed: false});
@@ -94,7 +96,7 @@ export default function ServiceDetailPage(props) {
     } else {
       accessService(id).then(res => {
         setDetail({...detail, accessed: true});
-        message.success('接取服务成功');
+        message.success('接取任务成功');
       }).catch(err => {
         // Message
         message.error(err);
@@ -102,8 +104,30 @@ export default function ServiceDetailPage(props) {
     }
   }
 
+  function handleDeleteComment(serviceCommentId) {
+    deleteComment(serviceCommentId).then(res => {
+      message.success('删除评论成功');
+      // 刷新评论列表
+      getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
+        setCommentTotal(res.total);
+        setCommentList(res.items);
+      }).catch(err => message.error(err))
+    }).catch(err => message.error(err))
+  }
+
+  function handleDeleteMessage(serviceMessageId) {
+    deleteMessage(serviceMessageId).then(res => {
+      message.success('删除留言成功');
+      // 刷新留言列表
+      getServiceMessage(id, totalCommentEntry, 0, 'likes').then(res => {
+        setMessageTotal(res.total);
+        setCommentList(res.items);
+      }).catch(err => message.error(err))
+    }).catch(err => message.error(err))
+  }
+
   return (<BasicLayout page="service-detail">
-    <ItemDetail detail={detail} descriptionTitle="服务描述" ratingTitle='服务评分:'/>
+    <ItemDetail detail={detail} descriptionTitle="任务描述" ratingTitle='任务评分:'/>
     <Space style={{display: 'flex', justifyContent: 'center', marginBottom: '20px'}}>
       {detail && detail.collected ? <Button type="primary" size="large"
                                             onClick={handleCollect}><StarOutlined/>取消收藏</Button> :
@@ -112,9 +136,9 @@ export default function ServiceDetailPage(props) {
       {detail && detail.status !== 'REMOVE' && detail.status !== 'DELETE' ? (detail.accessed ?
         <Button type="primary" size="large"
                 onClick={handleAccept}><PayCircleOutlined/>取消接取</Button> : <Button size="large"
-                                                                                       onClick={handleAccept}><PayCircleOutlined/>接服务</Button>) : (detail && detail.status === 'REMOVE' ?
-        <Button size="large" disabled>服务已被删除</Button> :
-        <Button size="large" disabled>服务已被移除</Button>)}
+                                                                                       onClick={handleAccept}><PayCircleOutlined/>接任务</Button>) : (detail && detail.status === 'REMOVE' ?
+        <Button size="large" disabled>任务已被删除</Button> :
+        <Button size="large" disabled>任务已被移除</Button>)}
     </Space>
     <div style={{height: '60px'}}></div>
     <CommentList
@@ -127,11 +151,21 @@ export default function ServiceDetailPage(props) {
         console.log(msg)
         putMessage(id, msg).then(res => {
           message.success('留言成功');
+          // 刷新留言列表
+          getServiceMessage(id, totalCommentEntry, 0, 'likes').then(res => {
+            setMessageTotal(res.total);
+            setCommentList(res.items);
+          }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onComment={(msg, rating) => {
         putComment(id, msg, rating).then(res => {
           message.success('评论成功');
+          // 刷新评论列表
+          getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
+            setCommentTotal(res.total);
+            setCommentList(res.items);
+          }).catch(err => message.error(err))
         }).catch(err => message.error(err))
       }}
       onChangeMode={key => {
@@ -172,6 +206,10 @@ export default function ServiceDetailPage(props) {
           }).catch(err => messageApi.open({type: 'error', content: err}))
         }
       }}
+
+      onDelete={index => {
+        mode === 'comment' ? handleDeleteComment(commentList[index].serviceCommentId) : handleDeleteMessage(commentList[index].serviceMessageId)}
+      }
     />
   </BasicLayout>);
 }

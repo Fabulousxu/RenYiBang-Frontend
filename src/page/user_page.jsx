@@ -35,9 +35,11 @@ export default function UserPage() {
 
             <Descriptions title="用户信息" bordered column={4}>
                 <Descriptions.Item label="用户名">{user.nickname}</Descriptions.Item>
-                <Descriptions.Item label="用户类型">{user.type}</Descriptions.Item>
+                {/*<Descriptions.Item label="用户类型">{user.type}</Descriptions.Item>*/}
                 <Descriptions.Item label="评分">{(user.rating / 10).toFixed(1)}</Descriptions.Item>
-                <Descriptions.Item label="余额">{(user.balance / 100).toFixed(2)}元</Descriptions.Item>
+                {/*<Descriptions.Item label="余额">{(user.balance / 100).toFixed(2)}元</Descriptions.Item>*/}
+                <Descriptions.Item label="电话号码">{user.phone}</Descriptions.Item>
+                <Descriptions.Item label="邮箱">{user.email}</Descriptions.Item>
             </Descriptions>
 
             {/*<Title level={3} style={{ marginTop: 24 }}>接收的任务</Title>*/}
