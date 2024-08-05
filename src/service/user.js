@@ -41,3 +41,13 @@ export async function fetchRecipientServices(pageSize, pageIndex) {
     const url = `${apiURL}/service/recipient/self?pageSize=${pageSize}&pageIndex=${pageIndex}`;
     return get(url);
 }
+
+export async function fetchCollectTasks(pageSize, pageIndex) {
+    const url = `${apiURL}/task/mycollect?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+    return get(url);
+}
+
+export async function fetchCollectServices(pageSize, pageIndex) {
+    const url = `${apiURL}/service/mycollect?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+    return get(url);
+}

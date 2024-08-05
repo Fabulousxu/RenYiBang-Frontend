@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import BasicLayout from "../component/basic_layout";
-import {Descriptions, Avatar, Typography, Button, Table, Tabs, Modal, Form, Input, Upload} from 'antd';
+import {Descriptions, Avatar, Typography, Button, Table, Tabs, Modal, Form, Input, Upload, message} from 'antd';
 import { getSelfProfile } from '../service/user';
 import {Link, Navigate, useParams} from "react-router-dom";
-import {cancelTask, unaccessTask} from '../service/task';
+import {cancelTask, unaccessTask, uncollectTask} from '../service/task';
 import TabPane from "antd/es/tabs/TabPane";
 import moment from "moment/moment";
-import {cancelService, unaccessService} from "../service/service";
+import {cancelService, unaccessService, uncollectService} from "../service/service";
 import {
     fetchInitiatorServices,
     fetchInitiatorTasks,
     fetchRecipientServices,
     fetchRecipientTasks,
+    fetchCollectServices,
+    fetchCollectTasks,
   updateUserProfile
 } from "../service/user";
 
@@ -65,6 +67,11 @@ export default function ProfilePage() {
                 case '4':
                     responseData = await fetchRecipientServices(pageSize, pageIndex);
                     break;
+                case '5':
+                    responseData = await fetchCollectTasks(pageSize, pageIndex);
+                    break;
+                case '6':
+                    responseData = await fetchCollectServices(pageSize, pageIndex);
                 default:
                     responseData = await fetchInitiatorTasks(pageSize, pageIndex);
             }
@@ -104,7 +111,11 @@ export default function ProfilePage() {
         title: '操作',
         key: 'action',
         render: (text, record) => (
-            <Button type="primary" onClick={() => cancelTask(record.taskId)}>取消</Button>
+          <Button type="primary" onClick={() => cancelTask(record.taskId).then(res => {
+              // 删除本条记录
+              message.success('取消任务成功');
+              setData(data.filter(item => item.taskId !== record.taskId));
+          })}>取消</Button>
         ),
     }, {
         title: '操作',
@@ -165,7 +176,7 @@ export default function ProfilePage() {
         render: (text, record) => (
             <Button type="primary" onClick={() => cancelService(record.serviceId).then(res => {
                 // 删除本条记录
-                console.log("Cancel service success:", res);
+                message.success('取消服务成功');
                 setData(data.filter(item => item.serviceId !== record.serviceId));
             })}>取消</Button>
         ),
@@ -198,6 +209,51 @@ export default function ProfilePage() {
                     setData(data.filter(item => item.serviceId !== record.serviceId));
                 }
             )}>取消接取</Button>
+        ),
+    }];
+
+    const collect_task_columns = [{
+        title: '任务标题',
+        dataIndex: 'title',
+        key: 'title',
+        render: (text, record) => <Link to={`/task/${record.taskId}`}>{text}</Link>,
+    }, {
+        title: '发起时间',
+        dataIndex: 'createdAt',
+        key: 'time',
+        sorter: (a, b) => moment(a.startTime).unix() - moment(b.startTime).unix(),
+    }, {
+        title: '操作',
+        key: 'action',
+        render: (text, record) => (
+            <Button type="primary" onClick={() => uncollectTask(record.taskId).then(res => {
+                    // 删除本条记录
+                    message.success('取消收藏成功');
+                    setData(data.filter(item => item.taskId !== record.taskId));
+                })}>取消收藏</Button>
+        ),
+    }];
+
+    const collect_service_columns = [{
+        title: '任务标题',
+        dataIndex: 'title',
+        key: 'title',
+        render: (text, record) => <Link to={`/service/${record.serviceId}`}>{text}</Link>,
+    }, {
+        title: '发起时间',
+        dataIndex: 'createdAt',
+        key: 'time',
+        sorter: (a, b) => moment(a.startTime).unix() - moment(b.startTime).unix(),
+    },{
+        title: '操作',
+        key: 'action',
+        render: (text, record) => (
+            <Button type="primary" onClick={() => uncollectService(record.serviceId).then(res => {
+                    // 删除本条记录
+                    message.success('取消收藏成功');
+                    setData(data.filter(item => item.serviceId !== record.serviceId));
+                }
+            )}>取消收藏</Button>
         ),
     }];
 
@@ -347,6 +403,12 @@ export default function ProfilePage() {
                 </TabPane>
                 <TabPane tab="我接收的服务" key="4">
                     <Table columns={service_recipient_columns} dataSource={data} />
+                </TabPane>
+                <TabPane tab="我收藏的任务" key="5">
+                    <Table columns={collect_task_columns} dataSource={data} />
+                </TabPane>
+                <TabPane tab="我收藏的服务" key="6">
+                    <Table columns={collect_service_columns} dataSource={data} />
                 </TabPane>
             </Tabs>
         </BasicLayout>

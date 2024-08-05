@@ -137,8 +137,8 @@ export default function ServiceDetailPage(props) {
         <Button type="primary" size="large"
                 onClick={handleAccept}><PayCircleOutlined/>取消接取</Button> : <Button size="large"
                                                                                        onClick={handleAccept}><PayCircleOutlined/>接任务</Button>) : (detail && detail.status === 'REMOVE' ?
-        <Button size="large" disabled>任务已被删除</Button> :
-        <Button size="large" disabled>任务已被移除</Button>)}
+        <Button size="large" disabled>任务已被移除</Button> :
+        <Button size="large" disabled>任务已被删除</Button>)}
     </Space>
     <div style={{height: '60px'}}></div>
     <CommentList
