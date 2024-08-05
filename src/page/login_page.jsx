@@ -23,6 +23,7 @@ function LoginPage() {
       const token = data.jwt;
       localStorage.setItem('jwt', token);
       localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userId', userId);
 
       navigate('/task');
     } catch (error) {
@@ -42,7 +43,7 @@ function LoginPage() {
         <Form onFinish={handleLogin}>
           <Form.Item
             name="username"
-            rules={[{ required: true, message: '请输入你的用户名!' }]}
+            rules={[{ required: true, message: '请输入你的用户ID!' }]}
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}

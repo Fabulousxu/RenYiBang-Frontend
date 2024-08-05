@@ -1,7 +1,7 @@
 import {Avatar, Button, Col, List, Pagination, Radio, Rate, Row, Tabs} from "antd";
 import Item from "antd/es/list/Item";
 import {Link} from "react-router-dom";
-import {LikeFilled, LikeOutlined} from "@ant-design/icons";
+import {DeleteOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
 import TextArea from "antd/es/input/TextArea";
 
@@ -9,7 +9,9 @@ export const totalCommentEntry = 10
 
 export default function CommentList(props) {
   const [message, setMessage] = useState('')
+  const [rating, setRating] = useState(0)
   const [orderValue, setOrderValue] = useState('likes')
+  const [mode, setMode] = useState('comment')
 
   const list = (<List
     itemLayout="horizontal"
@@ -17,7 +19,7 @@ export default function CommentList(props) {
     renderItem={(item, index) => (<Item index={index} style={{flexDirection: 'column'}}>
       <Row style={{width: '100%', alignItems: 'center'}}>
         <Col span={4}>
-          <Link to={`/user/${item.user.userId}`}>
+          <Link to={`/profile/${item.user.userId}`}>
             <Item.Meta
               avatar={<Avatar src={item.user.avatar}/>}
               title={item.user.nickname}
@@ -45,27 +47,81 @@ export default function CommentList(props) {
           />
         </Col>
         <Col>{item.likedNumber}</Col>
+
+        {item.commenter && item.commenter.userId === Number(localStorage.getItem('userId')) &&
+        <Col style={{padding: '0 0 0 15px'}}>
+          <Button
+            icon={<DeleteOutlined/>}
+            style={{border: 'none', borderRadius: '100%'}}
+            size='small'
+            onClick={() => props.onDelete(index)}
+          />
+        </Col>}
+
+        {item.messager && item.messager.userId === Number(localStorage.getItem('userId')) &&
+          <Col style={{padding: '0 0 0 15px'}}>
+            <Button
+              icon={<DeleteOutlined/>}
+              style={{border: 'none', borderRadius: '100%'}}
+              size='small'
+              onClick={() => props.onDelete(index)}
+            />
+          </Col>}
       </Row>
     </Item>)}
   />)
+
   return (
     <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+
       <Row style={{width: '70%', alignItems: 'center', paddingBottom: '2rem'}}>
-        <Col style={{flexGrow: 1}}>
-          <TextArea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder='留言'
-            style={{flexGrow: 1, height: '3rem'}}
-          />
-        </Col>
-        <Col style={{marginLeft: '15px'}}>
-          <Button type="primary" onClick={() => {
-            props.onMessage(message)
-            setMessage('')
-          }}>留言</Button>
-        </Col>
+        <Radio.Group onChange={e => setMode(e.target.value)} value={mode}>
+          <Radio value='comment'>评论</Radio>
+          <Radio value='message'>留言</Radio>
+        </Radio.Group>
+
+        {mode === 'comment' ? (
+          <>
+            <Col style={{flexGrow: 1}}>
+              <TextArea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder='输入文字'
+                style={{flexGrow: 1, height: '3rem'}}
+              />
+            </Col>
+            {/* 打分用的星星 */}
+            <Col style={{marginTop: '15px'}}>
+              <Rate value={rating} onChange={value => setRating(value)}/>
+            </Col>
+            <Col style={{marginLeft: '15px'}}>
+              <Button type="primary" onClick={() => {
+                props.onComment(message, rating)
+                setMessage('')
+              }}>评论</Button>
+            </Col>
+          </>
+        ) : (
+          <>
+            <Col style={{flexGrow: 1}}>
+              <TextArea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder='输入文字'
+                style={{flexGrow: 1, height: '3rem'}}
+              />
+            </Col>
+            <Col style={{marginLeft: '15px'}}>
+              <Button type="primary" onClick={() => {
+                props.onMessage(message)
+                setMessage('')
+              }}>留言</Button>
+            </Col>
+          </>
+        )}
+
       </Row>
+
       <Tabs
         type='card'
         style={{width: '100%'}}

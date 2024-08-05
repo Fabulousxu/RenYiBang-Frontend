@@ -16,20 +16,6 @@ const statusMap = {
   4: { text: '已取消', color: 'red' },
 };
 
-const getStatusStep = (status) => {
-  switch (status) {
-    case 1:
-      return 1;
-    case 3:
-      return 2;
-    case 2:
-    case 4:
-      return 3;
-    default:
-      return 0;
-  }
-};
-
 export default function OrderRecipientPage() {
   const { id } = useParams();
   const location = useLocation();
@@ -69,7 +55,7 @@ export default function OrderRecipientPage() {
   const handleComplete = async () => {
     try {
       await changeOrderStatus(id, 2); // 待确认
-      setOrder({ ...order, status: 3 });
+      setOrder({ ...order, status: 2 });
     } catch (error) {
       console.error(error);
     }
@@ -84,8 +70,6 @@ export default function OrderRecipientPage() {
       </BasicLayout>
     );
   }
-
-  const statusStep = getStatusStep(order.status);
 
   return (
     <BasicLayout>

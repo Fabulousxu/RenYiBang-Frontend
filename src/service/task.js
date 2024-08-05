@@ -50,6 +50,11 @@ export async function putMessage(taskId, content) {
   return await put(`${apiURL}/task/${taskId}/message`, {content})
 }
 
+export async function putComment(taskId, content, rating) {
+  return await put(`${apiURL}/task/${taskId}/comment`, {content, rating})
+
+}
+
 export async function accessTask(taskId) {
   let res = await put(`${apiURL}/task/${taskId}/access`)
   return res
@@ -88,4 +93,14 @@ export async function getTaskSuccessPeople(taskId, pageSize, pageIndex){
 
 export async function getTaskRefusePeople(taskId, pageSize, pageIndex){
   return await get(`${apiURL}/task/${taskId}/select/fail?pageSize=${pageSize}&pageIndex=${pageIndex}`);
+}
+
+//
+
+export async function deleteComment(commentId) {
+  return await del(`${apiURL}/task/comment/${commentId}`)
+}
+
+export async function deleteMessage(messageId) {
+  return await del(`${apiURL}/task/message/${messageId}`)
 }
