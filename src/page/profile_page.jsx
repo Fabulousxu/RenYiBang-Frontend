@@ -4,7 +4,7 @@ import {Descriptions, Avatar, Typography, Button, Table, Tabs, Modal, Form, Inpu
 import { getSelfProfile } from '../service/user';
 import {Link, Navigate, useParams} from "react-router-dom";
 import {cancelTask, unaccessTask, uncollectTask} from '../service/task';
-import TabPane from "antd/es/tabs/TabPane";
+import TabPane from "antd/lib/tabs/TabPane";
 import moment from "moment/moment";
 import {cancelService, unaccessService, uncollectService} from "../service/service";
 import {

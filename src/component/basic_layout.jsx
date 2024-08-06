@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Link} from "react-router-dom";
 import {Layout, Menu, theme} from 'antd';
-import {Content, Header, Footer} from "antd/es/layout/layout";
+import {Content, Header, Footer} from "antd/lib/layout/layout";
 import {
   AccountBookOutlined,
   MessageOutlined,

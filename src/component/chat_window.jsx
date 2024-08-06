@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Card, List, Input, Button, Avatar, Row, Col, Divider} from 'antd';
-import TextArea from "antd/es/input/TextArea";
+import TextArea from "antd/lib/input/TextArea";
 import {getChatHistory} from "../service/chat";
 
 const getHistoryCount = 10

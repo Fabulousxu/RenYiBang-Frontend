@@ -1,8 +1,8 @@
 import {
   Card, Col, Row, Avatar, Divider, Pagination, Button, Slider, InputNumber, DatePicker, Radio
 } from "antd";
-import Meta from "antd/es/card/Meta";
-import Search from "antd/es/input/Search";
+import Meta from "antd/lib/card/Meta";
+import Search from "antd/lib/input/Search";
 import {Link} from "react-router-dom";
 import {StarFilled, StarOutlined} from "@ant-design/icons";
 import {useState} from "react";

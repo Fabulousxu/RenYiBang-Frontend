@@ -1,7 +1,9 @@
 import {apiURL, get, post} from "./util";
 
+const chatURL = `${process.env.REACT_APP_WS_CHAT_URL}/chat`
+
 export default function connectWebSocket(userId) {
-  const socket = new WebSocket('ws://localhost:8095/chat')
+  const socket = new WebSocket(chatURL)
   socket.onopen = () => {
     socket.send(JSON.stringify({type: 'register', userId: userId}))
     console.log(`WebSocket connection opened, userId: ${userId}`)

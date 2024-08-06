@@ -1,5 +1,5 @@
 import React from 'react';
-import {List, Avatar, Row, Card, Col} from 'antd';
+import {List, Avatar, Row, Col} from 'antd';
 
 export default function ChatList(props) {
   return (<List

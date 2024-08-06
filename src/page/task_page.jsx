@@ -13,13 +13,12 @@ export default function TaskPage() {
   const [priceRange, setPriceRange] = useState([0, -1])
   const [timeRange, setTimeRange] = useState(['', ''])
   const [orderValue, setOrderValue] = useState('time')
-  const [messageApi, contextHolder] = message.useMessage()
 
   useEffect(() => {
     searchTask(keyword, totalEntry, 0, 'time', ['', ''], [0, -1]).then(res => {
       setTotal(res.total)
       setTaskList(res.items)
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
   }, [])
   return (<BasicLayout page='task'>
     <ItemList
@@ -33,7 +32,7 @@ export default function TaskPage() {
           setTotal(res.total)
           setTaskList(res.items)
           setCurrentPage(1)
-        }).catch(err => messageApi.open({type: 'error', content: err}))
+        }).catch(err => message.error(err))
       }}
       onChangePriceRange={value => setPriceRange(value)}
       onChangeTimeRange={value => setTimeRange(value)}
@@ -46,23 +45,21 @@ export default function TaskPage() {
           setTotal(res.total)
           setTaskList(res.items)
           setCurrentPage(page)
-        }).catch(err => messageApi.open({type: 'error', content: err}))
+        }).catch(err => message.error(err))
       }}
       onCollect={index => {
         if (taskList[index].collected) {
           uncollectTask(taskList[index].taskId).then(res => {
             taskList[index].collected = false
             setTaskList([...taskList])
-            messageApi.open({type: 'success', content: '取消收藏成功'})
-          }).catch(err => messageApi.open({
-            type: 'error', content: err
-          }))
+            message.success('取消收藏成功')
+          }).catch(err => message.error(err))
         } else {
           collectTask(taskList[index].taskId).then(res => {
             taskList[index].collected = true
             setTaskList([...taskList])
-            messageApi.open({type: 'success', content: '收藏成功'})
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+            message.success('收藏成功')
+          }).catch(err => message.error(err))
         }
       }}
     />

@@ -1,9 +1,9 @@
 import {Avatar, Button, Col, List, Pagination, Radio, Rate, Row, Tabs} from "antd";
-import Item from "antd/es/list/Item";
+import Item from "antd/lib/list/Item";
 import {Link} from "react-router-dom";
 import {DeleteOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
-import TextArea from "antd/es/input/TextArea";
+import TextArea from "antd/lib/input/TextArea";
 
 export const totalCommentEntry = 10
 
