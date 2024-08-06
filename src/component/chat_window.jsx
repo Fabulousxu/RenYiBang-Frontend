@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Card, List, Input, Button, Avatar, Row, Col, Divider} from 'antd';
+import {Card, List, Input, Button, Avatar, Row, Col, Divider, message} from 'antd';
 import TextArea from "antd/lib/input/TextArea";
 import {getChatHistory} from "../service/chat";
 
@@ -8,7 +8,7 @@ const getHistoryCount = 10
 export default function ChatWindow(props) {
   const selfId = props.self?.userId
   const [hasHistory, setHasHistory] = useState(true)
-  const [message, setMessage] = useState('')
+  const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState([])
   const messagesEndRef = useRef(null)
   const [scroll, setScroll] = useState(true)
@@ -19,13 +19,13 @@ export default function ChatWindow(props) {
       .then(res => {
         if (res.length < getHistoryCount) setHasHistory(false)
         setMessages(messages => [...res.reverse(), ...messages])
-      }).catch(error => console.error(error))
+      }).catch(error => message.error(error))
   }
 
   const onsend = () => {
-    if (message) {
-      props.socket.send({chatId: props.chat?.chatId, content: message})
-      setMessage('')
+    if (inputMessage) {
+      props.socket.send({chatId: props.chat?.chatId, content: inputMessage})
+      setInputMessage('')
       setScroll(true)
     }
   }
@@ -37,7 +37,7 @@ export default function ChatWindow(props) {
         setMessages(res.reverse())
         if (res.length < getHistoryCount) setHasHistory(false)
         setScroll(true)
-      }).catch(error => console.error(error))
+      }).catch(error => message.error(error))
   }, [props.chat])
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function ChatWindow(props) {
       <a onClick={getHistory}
          style={{
            fontSize: '0.8rem', color: hasHistory ? '' : 'gray'
-         }}>{hasHistory ? '获取更多聊天记录' : '无更多聊天记录'}< /a>
+         }}>{hasHistory ? '获取更多聊天记录' : '无更多聊天记录'}</a>
       <List
         dataSource={messages}
         style={{width: '100%'}}
@@ -80,7 +80,7 @@ export default function ChatWindow(props) {
           justifyContent: item.senderId === selfId ? 'flex-end' : 'flex-start'
         }}>
           {item.senderId !== selfId &&
-            <Avatar src={item.avatar} style={{margin: '0.8rem 10px 0 0'}}/>}
+            <Avatar src={props.chat?.chatter.avatar} style={{margin: '0.8rem 10px 0 0'}}/>}
           <div style={{display: 'flex', flexDirection: 'column', maxWidth: '70%'}}>
             <div style={{
               color: 'gray',
@@ -110,8 +110,8 @@ export default function ChatWindow(props) {
     <Row style={{width: '100%', alignItems: 'center'}}>
       <Col style={{flexGrow: 1}}>
         <TextArea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
           placeholder="输入消息"
           onPressEnter={onsend}
           style={{height: '3rem'}}
