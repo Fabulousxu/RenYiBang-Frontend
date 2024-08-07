@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter as Router } from 'react-router-dom';
-import ItemDetail from '../../component/item_detail'; // 调整为你的组件文件路径
+import ItemDetail from '../../component/item_detail';
 
 // Mock data
 const mockDetail = {
