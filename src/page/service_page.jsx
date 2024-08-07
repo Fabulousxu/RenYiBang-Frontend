@@ -13,13 +13,12 @@ export default function ServicePage() {
   const [priceRange, setPriceRange] = useState([0, -1])
   const [timeRange, setTimeRange] = useState(['', ''])
   const [orderValue, setOrderValue] = useState('time')
-  const [messageApi, contextHolder] = message.useMessage()
 
   useEffect(() => {
     searchService(keyword, totalEntry, 0, 'time', ['', ''], [0, -1]).then(res => {
       setTotal(res.total)
       setServiceList(res.items)
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
   }, [])
   return (<BasicLayout page='service'>
     <ItemList
@@ -33,7 +32,7 @@ export default function ServicePage() {
           setTotal(res.total)
           setServiceList(res.items)
           setCurrentPage(1)
-        }).catch(err => messageApi.open({type: 'error', content: err}))
+        }).catch(err => message.error(err))
       }}
       onChangePriceRange={value => setPriceRange(value)}
       onChangeTimeRange={value => setTimeRange(value)}
@@ -46,23 +45,21 @@ export default function ServicePage() {
           setTotal(res.total)
           setServiceList(res.items)
           setCurrentPage(page)
-        }).catch(err => messageApi.open({type: 'error', content: err}))
+        }).catch(err => message.error(err))
       }}
       onCollect={index => {
         if (serviceList[index].collected) {
           uncollectService(serviceList[index].serviceId).then(res => {
             serviceList[index].collected = false
             setServiceList([...serviceList])
-            messageApi.open({type: 'success', content: '取消收藏成功'})
-          }).catch(err => messageApi.open({
-            type: 'error', content: err
-          }))
+            message.success('取消收藏成功')
+          }).catch(err => message.error(err))
         } else {
           collectService(serviceList[index].serviceId).then(res => {
             serviceList[index].collected = true
             setServiceList([...serviceList])
-            messageApi.open({type: 'success', content: '收藏成功'})
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+            message.success('收藏成功')
+          }).catch(err => message.error(err))
         }
       }}
     />
