@@ -1,13 +1,13 @@
 import React from 'react';
 import {render, waitFor, screen, fireEvent} from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import TaskPage from '../../page/task_page';
-import { searchTask } from '../../service/task';
+import ServicePage from '../../page/service_page';
+import { searchService } from '../../service/service';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { message } from 'antd';
 import userEvent from "@testing-library/user-event";
 
-jest.mock('../../service/task');
+jest.mock('../../service/service');
 // jest.mock('../../component/basic_layout', () => (props) => <div>{props.children}</div>);
 
 jest.mock('antd', () => {
@@ -20,16 +20,16 @@ jest.mock('antd', () => {
     };
 });
 
-describe('TaskPage', () => {
+describe('ServicePage', () => {
     beforeAll(() => {
-        searchTask.mockResolvedValue(
+        searchService.mockResolvedValue(
             {
                 total: 100,
                 items: [{
-                    taskId: '1',
+                    serviceId: '1',
                     collected: true,
-                    title: 'Test Task',
-                    description: 'This is a test task.',
+                    title: 'Test Service',
+                    description: 'This is a test service.',
                     owner: {
                         userId: '1',
                         nickname: 'test',
@@ -44,38 +44,38 @@ describe('TaskPage', () => {
         };
     });
 
-    test('renders TaskPage and fetches tasks', async () => {
-        searchTask.mockResolvedValueOnce({
+    test('renders ServicePage and fetches services', async () => {
+        searchService.mockResolvedValueOnce({
             total: 1,
             items: [{
-                taskId: '1',
+                serviceId: '1',
                 collected: true,
-                title: 'Test Task',
-                description: 'This is a test task.',
+                title: 'Test Service',
+                description: 'This is a test service.',
             }],
         });
 
         render(
             <Router>
-                <TaskPage />
+                <ServicePage />
             </Router>
         );
 
         await waitFor(() => {
-            expect(searchTask).toHaveBeenCalledWith('', 24, 0, 'time', ['', ''], [0, -1]);
+            expect(searchService).toHaveBeenCalledWith('', 24, 0, 'time', ['', ''], [0, -1]);
         });
 
-        // 验证 TaskPage 是否渲染了任务
-        const taskElement = screen.getByRole('heading', { name: '任务 0条' });
-        expect(taskElement).toBeInTheDocument();
+        // 验证 ServicePage 是否渲染了任务
+        const serviceElement = screen.getByRole('heading', { name: '任务 0条' });
+        expect(serviceElement).toBeInTheDocument();
     });
 
-    test('handles search task error', async () => {
-        searchTask.mockRejectedValueOnce('Search failed');
+    test('handles search service error', async () => {
+        searchService.mockRejectedValueOnce('Search failed');
 
         render(
             <Router>
-                <TaskPage />
+                <ServicePage />
             </Router>
         );
 
@@ -85,14 +85,14 @@ describe('TaskPage', () => {
     });
 
     test('ItemList onSearch function', async () => {
-        // Mock the searchTask to return a resolved value
-        searchTask.mockResolvedValueOnce({
+        // Mock the searchService to return a resolved value
+        searchService.mockResolvedValueOnce({
             total: 1,
             items: [{
-                taskId: '1',
+                serviceId: '1',
                 collected: true,
-                title: 'Test Task',
-                description: 'This is a test task.',
+                title: 'Test Service',
+                description: 'This is a test service.',
                 owner: {
                     userId: '1',
                     nickname: 'test',
@@ -102,16 +102,16 @@ describe('TaskPage', () => {
             }],
         });
 
-        // Render TaskPage component
+        // Render ServicePage component
         render(
             <Router>
-                <TaskPage />
+                <ServicePage />
             </Router>
         );
 
-        // Ensure that initial searchTask call is made
+        // Ensure that initial searchService call is made
         await waitFor(() => {
-            expect(searchTask).toHaveBeenCalledWith('', 24, 0, 'time', ['', ''], [0, -1]);
+            expect(searchService).toHaveBeenCalledWith('', 24, 0, 'time', ['', ''], [0, -1]);
         });
 
         // Find and interact with search input and button
@@ -121,9 +121,9 @@ describe('TaskPage', () => {
         userEvent.type(searchInput, 'test');
         userEvent.click(searchButton);
 
-        // Wait for the searchTask to be called with correct arguments
+        // Wait for the searchService to be called with correct arguments
         await waitFor(() => {
-            expect(searchTask).toHaveBeenCalledWith('test', 24, 0, 'time', ['', ''], [0, -1]);
+            expect(searchService).toHaveBeenCalledWith('test', 24, 0, 'time', ['', ''], [0, -1]);
         });
     });
 
