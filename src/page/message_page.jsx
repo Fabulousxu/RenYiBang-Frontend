@@ -12,7 +12,6 @@ export default function MessagePage() {
   const [chatList, setChatList] = useState([])
   const [chat, setChat] = useState(null)
   const [socket, setSocket] = useState(null)
-  const [messageApi, contextHolder] = message.useMessage()
 
   const onmessage = data => {
     let index = chatList.findIndex(chat => chat.chatId === data.chatId)
@@ -27,7 +26,7 @@ export default function MessagePage() {
       setSelf(res.self)
       setChatList(res.chats)
       setChat(res.chats[0])
-    }).catch(error => messageApi.error(error))
+    }).catch(error => message.error(error))
   }, [])
 
   useEffect(() => {
