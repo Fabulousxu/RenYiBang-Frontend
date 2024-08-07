@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BasicLayout from "../component/basic_layout";
-import { Table, Tag, Tabs } from 'antd';
+import {Table, Tag, Tabs, message} from 'antd';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { fetchInitiatorTasks, fetchRecipientTasks, fetchInitiatorServices, fetchRecipientServices } from '../service/order';
@@ -41,7 +41,7 @@ export default function OrderPage() {
                 }
                 setData(responseData);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                message.error(error);
             }
         };
 

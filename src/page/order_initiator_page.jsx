@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Card, Avatar, Steps, Row, Col, Image, Typography, Divider, Space, Carousel, Button } from 'antd';
+import {Card, Avatar, Steps, Row, Col, Image, Typography, Divider, Space, Carousel, Button, message} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import BasicLayout from "../component/basic_layout";
 import { fetchOrderById, changeOrderStatus } from "../service/order";
@@ -27,7 +27,7 @@ export default function OrderInitiatorPage() {
         const orderData = await fetchOrderById(id);
         setOrder(orderData);
       } catch (error) {
-        console.error("Error fetching order data:", error);
+        message.error("Error fetching order data:", error);
       }
     };
 
@@ -47,15 +47,6 @@ export default function OrderInitiatorPage() {
     try {
       await changeOrderStatus(id, 4); // 已取消
       setOrder({ ...order, status: 4 });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleComplete = async () => {
-    try {
-      await changeOrderStatus(id, 2); // 待确认
-      setOrder({ ...order, status: 3 });
     } catch (error) {
       console.error(error);
     }

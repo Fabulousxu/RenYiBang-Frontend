@@ -34,24 +34,6 @@ export default function OrderRecipientPage() {
     fetchData();
   }, [id]);
 
-  const handleConfirm = async () => {
-    try {
-      await changeOrderStatus(id, 3); // 已完成
-      setOrder({ ...order, status: 2 });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleCancel = async () => {
-    try {
-      await changeOrderStatus(id, 4); // 已取消
-      setOrder({ ...order, status: 4 });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleComplete = async () => {
     try {
       await changeOrderStatus(id, 2); // 待确认
@@ -124,7 +106,7 @@ export default function OrderRecipientPage() {
           ) : null}
           {(order.status === 1) ? (
             <div>
-              <Button type="primary" onClick={() => handleComplete(order.id)} style={{ margin: '20px' }}>已完成</Button>
+              <Button type="primary" onClick={() => handleComplete(order.id)} style={{ margin: '20px' }}>完成订单</Button>
             </div>
           ) : null}
           {(order.status === 2) ? (
