@@ -11,7 +11,6 @@ const { Title } = Typography;
 
 export default function UserPage() {
     const [user, setUser] = useState({});
-    const [tasks, setTasks] = useState([]);
     const { id } = useParams();
     // 获取路径参数
 
