@@ -31,33 +31,32 @@ export default function ServiceDetailPage(props) {
   const [messageTotal, setMessageTotal] = useState(0);
   const [commentList, setCommentList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [messageApi, contextHolder] = message.useMessage()
 
   const getCommentWhenCommentMode = useCallback(() => {
     getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
       setCommentTotal(res.total);
       setCommentList(res.items);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
     getServiceMessage(id, totalCommentEntry, 0, 'likes').then(res => {
       setMessageTotal(res.total);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
   }, [id]);
 
   const getCommentWhenMessageMode = () => {
     getServiceMessage(id, totalCommentEntry, 0, 'likes').then(res => {
       setMessageTotal(res.total);
       setCommentList(res.items);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
     getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
       setCommentTotal(res.total);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
   };
 
   useEffect(() => {
     getService(id).then(res => {
       console.log(res);
       setDetail(res);
-    }).catch(err => messageApi.open({type: 'error', content: err}))
+    }).catch(err => message.error(err))
     getCommentWhenCommentMode();
   }, [id, getCommentWhenCommentMode]);
 
@@ -163,7 +162,7 @@ export default function ServiceDetailPage(props) {
       onComment={(msg, rating) => {
         putComment(id, msg, rating).then(res => {
           message.success('评论成功');
-          
+
           // 会出好多bug，先注释掉
           // setMode('comment')
           // getServiceComment(id, totalCommentEntry, 0, 'likes').then(res => {
@@ -183,7 +182,7 @@ export default function ServiceDetailPage(props) {
             setCommentTotal(res.total);
             setCommentList(res.items);
             setCurrentPage(page);
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+          }).catch(err => message.error(err))
       }}
       onChangeOrder={order => {
         (mode === 'comment' ? getServiceComment : getServiceMessage)(id, totalCommentEntry, 0, order)
@@ -191,7 +190,7 @@ export default function ServiceDetailPage(props) {
             setCommentTotal(res.total);
             setCommentList(res.items);
             setCurrentPage(1);
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+          }).catch(err => message.error(err))
       }}
       onLike={index => {
         if (commentList[index].liked) {
@@ -199,22 +198,21 @@ export default function ServiceDetailPage(props) {
             commentList[index].liked = false
             commentList[index].likedNumber--
             setCommentList([...commentList])
-            messageApi.open({type: 'success', content: '取消点赞成功'})
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+            message.success('取消点赞成功')
+          }).catch(err => message.error(err))
         } else {
           (mode === 'comment' ? likeComment : likeMessage)(mode === 'comment' ? commentList[index].serviceCommentId : commentList[index].serviceMessageId).then(res => {
             commentList[index].liked = true
             commentList[index].likedNumber++
             setCommentList([...commentList])
-            messageApi.open({type: 'success', content: '点赞成功'})
-          }).catch(err => messageApi.open({type: 'error', content: err}))
+            message.success('点赞成功')
+          }).catch(err => message.error(err))
         }
       }}
 
       onDelete={index => {
         mode === 'comment' ? handleDeleteComment(commentList[index].serviceCommentId) : handleDeleteMessage(commentList[index].serviceMessageId)
-      }
-      }
+      }}
     />
   </BasicLayout>);
 }

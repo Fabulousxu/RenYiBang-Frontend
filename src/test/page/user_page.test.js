@@ -1,10 +1,9 @@
-// src/test/page/UserPage.test.js
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import _react2, { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import UserPage from '../../page/user_page'; // 确保路径正确
-import { getUserProfile } from '../../service/user'; // 确保路径正确
+import UserPage from '../../page/user_page';
+import { getUserProfile } from '../../service/user';
 
 // Mock window.matchMedia
 global.matchMedia = global.matchMedia || function() {
@@ -35,6 +34,8 @@ describe('UserPage', () => {
     });
 
     test('renders user profile', async () => {
+        getUserProfile.mockResolvedValue(userProfile);
+
         render(
             <MemoryRouter initialEntries={['/user/1']}>
                 <Routes>
