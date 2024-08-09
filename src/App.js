@@ -1,7 +1,6 @@
 import {Navigate, Route, Routes} from 'react-router-dom';
 import TaskPage from "./page/task_page";
 import ServicePage from "./page/service_page";
-import HelpPage from "./page/help_page";
 import MessagePage from "./page/message_page";
 import ProfilePage from "./page/profile_page";
 import OrderPage from "./page/order_page";
@@ -22,7 +21,6 @@ export default function App() {
       <Route path='/task/:id' element={<TaskDetailPage/>}/>
       <Route path='/service' element={<ServicePage/>}/>
       <Route path='/service/:id' element={<ServiceDetailPage/>}/>
-      <Route path='/help' element={<HelpPage/>}/>
       <Route path='/order' element={<OrderPage/>}/>
       <Route path='/order/task/recipient/:id' element={<OrderRecipientPage/>}/>
       <Route path='/order/service/recipient/:id' element={<OrderRecipientPage/>}/>

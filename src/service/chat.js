@@ -1,6 +1,6 @@
 import {apiURL, get, post} from "./util";
 
-const chatURL = `${process.env.REACT_APP_WS_CHAT_URL}/chat`
+const chatURL = `${process.env.REACT_APP_WS_URL}/chat`
 
 export default function connectWebSocket(userId) {
   const socket = new WebSocket(chatURL)

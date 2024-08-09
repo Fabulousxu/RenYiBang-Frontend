@@ -1,7 +1,7 @@
 import {Avatar, Card, Carousel, Col, Divider, Image, Rate, Row} from "antd";
 import React from "react";
 import {Link} from "react-router-dom";
-import Meta from "antd/lib/card/Meta";
+import Meta from "antd/es/card/Meta";
 
 export default function ItemDetail(props) {
   return (<Row gutter={16}>

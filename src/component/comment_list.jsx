@@ -1,9 +1,9 @@
 import {Avatar, Button, Col, List, Pagination, Radio, Rate, Row, Tabs} from "antd";
-import Item from "antd/lib/list/Item";
+import Item from "antd/es/list/Item";
 import {Link} from "react-router-dom";
 import {DeleteOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons";
 import React, {useState} from "react";
-import TextArea from "antd/lib/input/TextArea";
+import TextArea from "antd/es/input/TextArea";
 
 export const totalCommentEntry = 10
 
@@ -96,7 +96,7 @@ export default function CommentList(props) {
             </Col>
             <Col style={{marginLeft: '15px'}}>
               <Button type="primary" onClick={() => {
-                props.onComment(message, rating)
+                props.onComment(message, rating * 20)
                 setMessage('')
               }}>评论</Button>
             </Col>

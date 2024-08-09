@@ -3,8 +3,8 @@ import {Layout, message} from 'antd';
 import BasicLayout from "../component/basic_layout";
 import ChatList from "../component/chat_list";
 import ChatWindow from "../component/chat_window";
-import Sider from "antd/lib/layout/Sider";
-import {Content} from "antd/lib/layout/layout";
+import Sider from "antd/es/layout/Sider";
+import {Content} from "antd/es/layout/layout";
 import connectWebSocket, {getChatList} from "../service/chat";
 
 export default function MessagePage() {
